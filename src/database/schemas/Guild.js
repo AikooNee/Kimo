@@ -101,6 +101,7 @@ const Schema = new mongoose.Schema({
   music: {
     stay: {
       enabled: Boolean,
+      channel: String,
     },
   },
   autoroles: [String],
