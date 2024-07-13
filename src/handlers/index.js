@@ -1,0 +1,17 @@
+module.exports = {
+  automodHandler: require("./automod"),
+  commandHandler: require("./command"),
+  contextHandler: require("./context"),
+  counterHandler: require("./counter"),
+  greetingHandler: require("./greeting"),
+  inviteHandler: require("./invite"),
+  presenceHandler: require("./presence"),
+  reactionRoleHandler: require("./reactionRoles"),
+  statsHandler: require("./stats"),
+  translationHandler: require("./translation"),
+  afkHandler: require("./afk"),
+  chatbotHandler: require("./chatbot"),
+  lavaclientHandler: require("./lavaclient"),
+  buttonHandler: require("./button"),
+  giveawayHandler: require("./giveaway"),
+};

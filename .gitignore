@@ -1,0 +1,7 @@
+.DS_Store
+.vscode/
+node_modules/
+*.log
+*.tar.gz
+.env
+package-lock.json
