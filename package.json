@@ -1,7 +1,7 @@
 {
   "name": "kimo",
   "version": "2.0.0",
-  "description": "Hey, it's me Kimo! multipurpose discord bot",
+  "description": "kimo! multipurpose discord bot",
   "main": "bot.js",
   "author": "saiteja-madha",
   "license": "ISC",
