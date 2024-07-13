@@ -32,8 +32,17 @@ module.exports = {
 
 async function toggleAutoplay({ client, guildId }) {
   const player = client.musicManager.players.resolve(guildId);
-  const isAutoplay = player.autoplay;
 
+  // Check if there is a song currently playing
+  if (!player || !player.queue.current) {
+    const embed = new EmbedBuilder()
+      .setColor(client.config.EMBED_COLORS.ERROR)
+      .setDescription("No song is currently playing.");
+
+    return { embeds: [embed] };
+  }
+
+  const isAutoplay = player.autoplay;
   player.autoplay = !isAutoplay;
 
   const description = `Autoplay has been ${!isAutoplay ? "enabled" : "disabled"}.`;
