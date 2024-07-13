@@ -1,10 +1,4 @@
-const { 
-  EmbedBuilder, 
-  ButtonBuilder, 
-  ButtonStyle, 
-  ActionRowBuilder, 
-  GatewayDispatchEvents 
-} = require("discord.js");
+const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, GatewayDispatchEvents } = require("discord.js");
 const { Cluster } = require("lavaclient");
 const { getSettings } = require("@schemas/Guild");
 require("@lavaclient/plugin-queue/register");
@@ -51,8 +45,20 @@ module.exports = (client) => {
   const buttonRow = new ActionRowBuilder()
     .addComponents(bLoop, bPause, bStop, bSkip, bShuffle);
 
-  lavaclient.on("nodeConnected", (node) => {
+  lavaclient.on("nodeConnected", async (node) => {
     client.logger.log(`Node "${node.identifier}" connected`);
+    let count = 0;
+      
+    for (const guild of client.guilds.cache.values()) {
+      const settings = await getSettings(guild);
+      if (settings.music.stay.enabled && settings.music.stay.channel) {
+        const player = lavaclient.players.create(guild.id);
+        player.queue.data.channel = client.channels.cache.get(settings.music.stay.channel);
+        player.voice.connect(settings.music.stay.channel, { deafened: true });
+        count++;
+      }
+    }
+    client.logger.log(`Re-established ${count} voice connections`);
   });
 
   lavaclient.on("nodeDisconnected", (node) => {
@@ -214,7 +220,7 @@ module.exports = (client) => {
       return lavaclient.players.destroy(guildId);
     }
   }
-  
+
   client.autoplay = autoplay;
 
   return lavaclient;
