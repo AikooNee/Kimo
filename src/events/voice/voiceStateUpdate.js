@@ -19,11 +19,16 @@ module.exports = async (client, oldState, newState) => {
     if (oldState.channelId === guild.members.me.voice.channelId && !newState.channel) {
       // check how many people are in the channel now
       if (oldState.channel.members.size === 1) {
-        setTimeout(() => {
+        setTimeout(async () => {
           // if 1 (you), wait 1 minute
-          if (!oldState.channel.members.size - 1) {
+          if (oldState.channel.members.size === 1) {
             const player = client.musicManager.players.resolve(guild.id);
-            if (player) client.musicManager.players.destroy(guild.id).then(player.voice.disconnect()); // destroy the player
+            if (player) {
+              const settings = await getSettings(guild);
+              if (!settings.music.stay.enabled) {
+                client.musicManager.players.destroy(guild.id).then(player.voice.disconnect()); // destroy the player
+              }
+            }
           }
         }, client.config.MUSIC.IDLE_TIME * 1000);
       }
