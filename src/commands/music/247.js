@@ -48,6 +48,7 @@ async function toggle247({ client, guildId, member, channel }, settings) {
   }
 
   settings.music.stay.enabled = !is247;
+  settings.music.stay.channel = !is247 ? member.voice.channel.id : null;
   await settings.save();
 
   const description = `24/7 mode is now ${!is247 ? "enabled" : "disabled"}`;
