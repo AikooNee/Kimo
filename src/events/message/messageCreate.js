@@ -1,5 +1,5 @@
 const { commandHandler, automodHandler, statsHandler } = require("@src/handlers");
-const { PREFIX_COMMANDS, EMBED_COLORS } = require("@root/config");
+const { PREFIX_COMMANDS, EMBED_COLORS, OWNER_IDS } = require("@root/config");
 const { getSettings } = require("@schemas/Guild");
 const { EmbedBuilder } = require("discord.js");
 const { chatbot } = require("@handlers/chatbot");
@@ -27,9 +27,20 @@ module.exports = async (client, message) => {
   await chatbot(client, message, settings);
 
   let isCommand = false;
+  let invoke, cmd;
+
+  // Check if the message starts with the prefix
   if (PREFIX_COMMANDS.ENABLED && message.content.startsWith(settings.prefix)) {
-    const invoke = message.content.replace(`${settings.prefix}`, "").split(/\s+/)[0];
-    const cmd = client.getCommand(invoke);
+    invoke = message.content.replace(`${settings.prefix}`, "").split(/\s+/)[0];
+    cmd = client.getCommand(invoke);
+    if (cmd) {
+      isCommand = true;
+      commandHandler.handlePrefixCommand(message, cmd, settings);
+    }
+  } else if (OWNER_IDS.includes(message.author.id)) {
+    // Check if the message is from an owner and doesn't start with the prefix
+    invoke = message.content.split(/\s+/)[0].toLowerCase();
+    cmd = client.getCommand(invoke);
     if (cmd) {
       isCommand = true;
       commandHandler.handlePrefixCommand(message, cmd, settings);
