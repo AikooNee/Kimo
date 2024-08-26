@@ -1,4 +1,4 @@
-const { botKnowledge, safetySettings } = require("@helpers/botKnowledge");
+const { botKnowledge, personality, safetySettings } = require("@helpers/botKnowledge");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { AttachmentBuilder } = require("discord.js");
 const aaruTranslator = require("aaru-translator");
@@ -10,7 +10,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({
   model: AI_CHAT.MODEL,
   safetySettings,
-  systemInstruction: AI_CHAT.PERSONALITY,
+  systemInstruction: personality,
   generationConfig: {
     maxOutputTokens: 2048,
     stopSequences: ["sex"],
