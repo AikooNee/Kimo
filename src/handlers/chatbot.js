@@ -1,5 +1,6 @@
 const { botKnowledge, safetySettings } = require("@helpers/botKnowledge");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { AttachmentBuilder } = require("discord.js");
 const aaruTranslator = require("aaru-translator");
 const { AI_CHAT } = require("@root/config");
 const axios = require("axios");
@@ -107,7 +108,15 @@ async function chatbot(client, message, settings) {
       reply = reply.replace(/\b(?:https?|ftp):\/\/\S+/gi, "").trim();
     }
 
-    return message.safeReply(reply);
+    if (reply.length > 2000) {
+      const attachment = new AttachmentBuilder(Buffer.from(reply, "utf-8"), { name: "response.txt" });
+      return message.reply({
+        content: "The response was too long to send directly, so it has been sent as a text file instead.",
+        files: [attachment],
+      });
+    } else {
+      return message.safeReply(reply);
+    }
   } catch (error) {
     client.logger.error(error);
     message.safeReply(
