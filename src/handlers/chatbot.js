@@ -110,7 +110,7 @@ async function chatbot(client, message, settings) {
 
     if (reply.length > 2000) {
       const attachment = new AttachmentBuilder(Buffer.from(reply, "utf-8"), { name: "response.txt" });
-      return message.reply({
+      return message.safeReply({
         content: "The response was too long to send directly, so it has been sent as a text file instead.",
         files: [attachment],
       });
