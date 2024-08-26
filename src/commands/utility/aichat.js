@@ -15,7 +15,7 @@ const languages = [
   { name: "Chinese (Traditional)", value: "zh-tw" },
   { name: "Hindi", value: "hi" },
   { name: "Arabic", value: "ar" },
-  { name: "Dutch", value: "nl" },
+  { name: "Urdu", value: "ur" },
   { name: "Greek", value: "el" },
   { name: "Polish", value: "pl" },
   { name: "Swedish", value: "sv" },
