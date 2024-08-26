@@ -28,6 +28,18 @@ module.exports = {
     API_ERROR: "Unexpected Backend Error! Try again later or contact support server",
   },
 
+  // AI CHATBOT 
+  AI_CHAT: {
+    ENABLED: true,
+    MODEL: "gemini-1.5-flash",
+    PERSONALITY: "You are cute waifu ai chatbot. Your name is kimo",
+    DEFAULT_LANG: "en",
+    TRANSLATE: true,
+    COOLDOWN: 10, // 10 seconds
+    ANTI_LINKS: false,
+    MAX_HISTORY: 6,
+  },
+    
   // PLUGINS
   AUTOMOD: {
     ENABLED: true,
