@@ -118,10 +118,8 @@ async function chatbot(client, message, settings) {
       return message.safeReply(reply);
     }
   } catch (error) {
-    client.logger.error(error);
-    message.safeReply(
-      "Oops! Something went wrong while processing your request. Please try again later."
-    );
+    client.logger.error("Chatbot Error: ", error);
+    message.safeReply(error.message);
   } finally {
     users.set(message.author.id, data);
   }
