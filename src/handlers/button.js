@@ -1,11 +1,8 @@
 const { EMBED_COLORS } = require("@root/config");
-const { LoopType } = require("@lavaclient/plugin-queue");
 const { EmbedBuilder } = require("discord.js");
 
 async function sendReply(interaction, content) {
-  const embed = new EmbedBuilder()
-    .setColor(EMBED_COLORS.BOT_EMBED)
-    .setDescription(content);
+  const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(content);
 
   await interaction.reply({ embeds: [embed], ephemeral: true });
 }
@@ -19,7 +16,10 @@ async function pauseButton(client, interaction) {
     return sendReply(interaction, "🚫 You need to join my voice channel.");
   }
 
-  if (interaction.guild.members.me.voice.channel && !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)) {
+  if (
+    interaction.guild.members.me.voice.channel &&
+    !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)
+  ) {
     return sendReply(interaction, "🚫 You're not in the same voice channel.");
   }
 
@@ -45,7 +45,10 @@ async function skipButton(client, interaction) {
     return sendReply(interaction, "🚫 You need to join my voice channel.");
   }
 
-  if (interaction.guild.members.me.voice.channel && !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)) {
+  if (
+    interaction.guild.members.me.voice.channel &&
+    !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)
+  ) {
     return sendReply(interaction, "🚫 You're not in the same voice channel.");
   }
 
@@ -69,7 +72,10 @@ async function stopButton(client, interaction) {
     return sendReply(interaction, "🚫 You need to join my voice channel.");
   }
 
-  if (interaction.guild.members.me.voice.channel && !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)) {
+  if (
+    interaction.guild.members.me.voice.channel &&
+    !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)
+  ) {
     return sendReply(interaction, "🚫 You're not in the same voice channel.");
   }
 
@@ -91,7 +97,10 @@ async function loopButton(client, interaction) {
     return sendReply(interaction, "🚫 You need to join my voice channel.");
   }
 
-  if (interaction.guild.members.me.voice.channel && !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)) {
+  if (
+    interaction.guild.members.me.voice.channel &&
+    !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)
+  ) {
     return sendReply(interaction, "🚫 You're not in the same voice channel.");
   }
 
@@ -125,7 +134,10 @@ async function shuffleButton(client, interaction) {
     return sendReply(interaction, "🚫 You need to join my voice channel.");
   }
 
-  if (interaction.guild.members.me.voice.channel && !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)) {
+  if (
+    interaction.guild.members.me.voice.channel &&
+    !interaction.member.voice.channel.equals(interaction.guild.members.me.voice.channel)
+  ) {
     return sendReply(interaction, "🚫 You're not in the same voice channel.");
   }
 

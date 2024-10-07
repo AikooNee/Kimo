@@ -38,32 +38,44 @@ module.exports = {
 async function toggle247({ client, guildId, member, channel }, settings) {
   const is247 = settings.music.stay.enabled;
 
-  // Check if the user is connected to a voice channel
   if (!member.voice?.channelId) {
-    const embed = new EmbedBuilder()
-      .setColor(client.config.EMBED_COLORS.ERROR)
-      .setDescription("You need to be connected to a voice channel to toggle 24/7 mode.");
-
-    return { embeds: [embed] };
+    return {
+      embeds: [
+        new EmbedBuilder()
+          .setColor(client.config.EMBED_COLORS.ERROR)
+          .setDescription("You need to be connected to a voice channel to toggle 24/7 mode"),
+      ],
+    };
   }
 
-  settings.music.stay.enabled = !is247;
-  settings.music.stay.channel = !is247 ? member.voice.channel.id : null;
+  const { id: voiceId } = member.voice.channel;
+  settings.music.stay = {
+    enabled: !is247,
+    textId: !is247 ? channel.id : null,
+    voiceId: !is247 ? voiceId : null,
+  };
   await settings.save();
 
-  const description = `24/7 mode is now ${!is247 ? "enabled" : "disabled"}`;
-  const embed = new EmbedBuilder()
-    .setColor(client.config.EMBED_COLORS.BOT_EMBED)
-    .setDescription(description);
-
-  if (!is247) {
-    let player = client.musicManager.players.resolve(guildId);
-    if (!player?.connected) {
-      player = client.musicManager.players.create(guildId);
-      player.queue.data.channel = channel;
-      player.voice.connect(member.voice.channel.id, { deafened: true });
-    }
+  let player = client.manager.getPlayer(guildId);
+  if (!player) {
+    player = await client.manager.createPlayer({
+      guildId,
+      voiceChannelId: voiceId,
+      textChannelId: channel.id,
+      selfMute: false,
+      selfDeaf: true,
+    });
   }
 
-  return { embeds: [embed] };
+  if (!player.connected) {
+    await player.connect();
+  }
+
+  return {
+    embeds: [
+      new EmbedBuilder()
+        .setColor(client.config.EMBED_COLORS.BOT_EMBED)
+        .setDescription(`24/7 mode is now ${!is247 ? "enabled" : "disabled"}`),
+    ],
+  };
 }

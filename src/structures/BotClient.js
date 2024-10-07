@@ -8,11 +8,12 @@ const {
 } = require("discord.js");
 const path = require("path");
 const Logger = require("../helpers/Logger");
+const { MUSIC } = require("@root/config");
 const { recursiveReadDirSync } = require("../helpers/Utils");
 const { validateCommand, validateContext } = require("../helpers/Validator");
 const { schemas } = require("@src/database/mongoose");
 const CommandCategory = require("./CommandCategory");
-const lavaclient = require("../handlers/lavaclient");
+const Manager = require("../handlers/manager");
 const giveawaysHandler = require("../handlers/giveaway");
 const { DiscordTogether } = require("discord-together");
 
@@ -33,10 +34,11 @@ module.exports = class BotClient extends Client {
         GatewayIntentBits.GuildMessageTyping,
       ],
       partials: [Partials.User, Partials.Message, Partials.Reaction, Partials.Channel],
-      allowedMentions: { parse: ['users', 'everyone'], repliedUser: false },
+      allowedMentions: { parse: ["users", "everyone"], repliedUser: false },
       restRequestTimeout: 20000,
     });
 
+    this.setMaxListeners(40);
     this.wait = require("util").promisify(setTimeout); // await client.wait(1000) - Wait 1 second
     this.config = require("@root/config"); // load the config file
 
@@ -63,7 +65,7 @@ module.exports = class BotClient extends Client {
       : undefined;
 
     // Music Player
-    if (this.config.MUSIC.ENABLED) this.musicManager = lavaclient(this);
+    if (MUSIC.ENABLED) this.manager = new Manager(this);
 
     // Giveaways
     if (this.config.GIVEAWAYS.ENABLED) this.giveawaysManager = giveawaysHandler(this);
@@ -73,7 +75,7 @@ module.exports = class BotClient extends Client {
 
     // Database
     this.database = schemas;
-      
+
     // Utils
     this.utils = require("../helpers/Utils");
 
@@ -92,17 +94,25 @@ module.exports = class BotClient extends Client {
 
     recursiveReadDirSync(directory).forEach((filePath) => {
       const file = path.basename(filePath);
+      const dir = path.basename(path.dirname(filePath));
+
       try {
         const eventName = path.basename(file, ".js");
         const event = require(filePath);
 
-        this.on(eventName, event.bind(null, this));
+        if (dir === "node") {
+          this.manager.nodeManager.on(eventName, event.bind(null, this));
+        } else if (dir === "player") {
+          this.manager.on(eventName, event.bind(null, this));
+        } else {
+          this.on(eventName, event.bind(null, this));
+        }
 
         delete require.cache[require.resolve(filePath)];
         success += 1;
       } catch (ex) {
         failed += 1;
-        this.logger.error(`loadEvent - ${file}`, ex);
+        this.logger.error(`Failed to load event - ${file}`, ex);
       }
     });
 
@@ -275,7 +285,7 @@ module.exports = class BotClient extends Client {
     const patternMatch = search.match(/(\d{17,20})/);
     if (patternMatch) {
       const id = patternMatch[1];
-      const fetched = await this.users.fetch(id, { cache: true }).catch(() => { }); // check if mentions contains the ID
+      const fetched = await this.users.fetch(id, { cache: true }).catch(() => {}); // check if mentions contains the ID
       if (fetched) {
         users.push(fetched);
         return users;

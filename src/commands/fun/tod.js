@@ -17,7 +17,7 @@ module.exports = {
   },
   slashCommand: {
     enabled: true,
-    options: []
+    options: [],
   },
 
   async messageRun(message) {
@@ -49,10 +49,10 @@ async function getTod(author) {
   const embed = new EmbedBuilder()
     .setColor("Random")
     .setTitle(data.question)
-    .setFooter({ text: uwu === 'truth' ? 'Type: Truth' : 'Type: Dare' })
+    .setFooter({ text: uwu === "truth" ? "Type: Truth" : "Type: Dare" })
     .setAuthor({
       name: `Requested by ${author.displayName}`,
-      iconURL: author.displayAvatarURL({ format: 'png', dynamic: true, size: 2048 }),
+      iconURL: author.displayAvatarURL({ format: "png", dynamic: true, size: 2048 }),
     });
 
   return { embeds: [embed] };

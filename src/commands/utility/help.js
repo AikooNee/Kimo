@@ -97,8 +97,16 @@ async function getHelpMenu({ client, guild }) {
 
   let components = [];
   components.push(
-    new ButtonBuilder().setCustomId("previousBtn").setEmoji("<:a_back:1215968893445869569>").setStyle(ButtonStyle.Secondary).setDisabled(true),
-    new ButtonBuilder().setCustomId("nextBtn").setEmoji("<:a_next:1215968877700452394>").setStyle(ButtonStyle.Secondary).setDisabled(true)
+    new ButtonBuilder()
+      .setCustomId("previousBtn")
+      .setEmoji("<:a_back:1215968893445869569>")
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId("nextBtn")
+      .setEmoji("<:a_next:1215968877700452394>")
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(true)
   );
 
   let buttonsRow = new ActionRowBuilder().addComponents(components);
@@ -172,21 +180,20 @@ const waiter = (msg, userId, prefix) => {
     if (!msg.guild || !msg.channel) return;
 
     const timedOutEmbed = new EmbedBuilder()
-       .setColor(EMBED_COLORS.BOT_EMBED)
-       .setTitle('Help menu got Timeout')
-       .setDescription('This menu has wilted away like cherry blossoms in the wind. 🍃\n\nDon\'t worry, you can always summon me again by running </help:1215976212438974514>')
-       .setFooter({ text: `Aaruu - Your anime bestie!` })
-       .setFields([]);
+      .setColor(EMBED_COLORS.BOT_EMBED)
+      .setTitle("Help menu got Timeout")
+      .setDescription(
+        "This menu has wilted away like cherry blossoms in the wind. 🍃\n\nDon't worry, you can always summon me again by running </help:1215976212438974514>"
+      )
+      .setFooter({ text: `Aaruu - Your anime bestie!` })
+      .setFields([]);
 
-   const timeoutRow = new ActionRowBuilder().addComponents(
-  new ButtonBuilder()
-    .setLabel('Invite Me')
-    .setStyle(ButtonStyle.Link)
-    .setURL('https://au.aarubot.xyz/invite'),
-  new ButtonBuilder()
-    .setLabel('Support Server')
-    .setStyle(ButtonStyle.Link)
-    .setURL('https://au.aarubot.xyz/support')/*,
+    const timeoutRow = new ActionRowBuilder().addComponents(
+      new ButtonBuilder().setLabel("Invite Me").setStyle(ButtonStyle.Link).setURL("https://au.aarubot.xyz/invite"),
+      new ButtonBuilder()
+        .setLabel("Support Server")
+        .setStyle(ButtonStyle.Link)
+        .setURL("https://au.aarubot.xyz/support") /*,
   new ButtonBuilder()
     .setLabel('Vote')
     .setStyle(ButtonStyle.Link)
@@ -195,9 +202,9 @@ const waiter = (msg, userId, prefix) => {
     .setLabel('Commands')
     .setStyle(ButtonStyle.Link)
     .setURL('https://au.aarubot.xyz/commands/')*/
-);
+    );
 
-msg.edit({ content: '', embeds: [timedOutEmbed], components: [timeoutRow] });
+    msg.edit({ content: "", embeds: [timedOutEmbed], components: [timeoutRow] });
   });
 };
 

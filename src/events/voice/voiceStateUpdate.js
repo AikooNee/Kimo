@@ -22,11 +22,11 @@ module.exports = async (client, oldState, newState) => {
         setTimeout(async () => {
           // if 1 (you), wait 1 minute
           if (oldState.channel.members.size === 1) {
-            const player = client.musicManager.players.resolve(guild.id);
+            const player = client.manager.getPlayer(guild.id);
             if (player) {
               const settings = await getSettings(guild);
               if (!settings.music.stay.enabled) {
-                client.musicManager.players.destroy(guild.id).then(player.voice.disconnect()); // destroy the player
+                client.manager.getPlayer(guild.id).destroy(); // destroy the player
               }
             }
           }
@@ -82,5 +82,5 @@ module.exports = async (client, oldState, newState) => {
   }
 
   // Send the embed if it has fields
-  if (embed.data.fields.length) logChannel.send({ embeds: [embed] });
+  if (embed.data?.fields?.length) logChannel.send({ embeds: [embed] });
 };

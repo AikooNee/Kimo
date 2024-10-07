@@ -24,9 +24,7 @@ const afk = async (client, message, settings) => {
       settings.afk = settings.afk.filter((a) => a.userId !== userId);
       await settings.save();
 
-      const embed = new EmbedBuilder()
-        .setColor(botEmbedColor)
-        .setDescription(description);
+      const embed = new EmbedBuilder().setColor(botEmbedColor).setDescription(description);
 
       await message.safeReply({ embeds: [embed] });
       return;
@@ -41,9 +39,7 @@ const afk = async (client, message, settings) => {
       const duration = Math.floor((Date.now() - new Date(afkCheck.afktime)) / 1000);
       const description = `<@${user.id}> has been AFK for ${timeformat(duration)}.\nReason: ${afkCheck.reason}`;
 
-      const embed = new EmbedBuilder()
-        .setColor(botEmbedColor)
-        .setDescription(description);
+      const embed = new EmbedBuilder().setColor(botEmbedColor).setDescription(description);
 
       await message.safeReply({ embeds: [embed] });
 

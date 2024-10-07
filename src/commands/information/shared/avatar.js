@@ -15,8 +15,7 @@ module.exports = (user) => {
   const button2048 = new ButtonBuilder().setLabel("x2048").setURL(x2048).setStyle(ButtonStyle.Link);
   const button4096 = new ButtonBuilder().setLabel("x4096").setURL(x4096).setStyle(ButtonStyle.Link);
 
-  const actionRow = new ActionRowBuilder()
-    .addComponents(button512, button1024, button2048, button4096);
+  const actionRow = new ActionRowBuilder().addComponents(button512, button1024, button2048, button4096);
 
   const embed = new EmbedBuilder()
     .setTitle(`Avatar of ${user.username}`)

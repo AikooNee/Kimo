@@ -31,14 +31,9 @@ module.exports = {
  * @param {import("discord.js").CommandInteraction|import("discord.js").Message} arg0
  */
 async function stop({ client, guildId }, settings) {
-  const player = client.musicManager.players.resolve(guildId);
-  if (settings.music.stay.enabled) {
-    player.queue.clear();
-    player.stop();
-  } else {
-    player.voice.disconnect();
-    await client.musicManager.players.destroy(guildId);
-  }
-  client.musicManager.emit('playerDestroy', player, player.autoplay)
+  const player = client.manager.getPlayer(guildId);
+
+  settings.music.stay.enabled ? player.stopPlaying(true, false) : player.destroy();
+
   return "🎶 The music player is stopped and queue has been cleared";
 }

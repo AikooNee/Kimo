@@ -61,7 +61,7 @@ module.exports = {
     const card = await RankCard({
       name: user.username,
       level: `Level ${memberStats.level}`,
-      color: 'auto',
+      color: "auto",
       brightness: "50", // 0 to 100
       avatar: user.displayAvatarURL({ format: "png", size: 2048 }),
       progress: ((memberStats.xp / xpNeeded) * 100).toFixed(2),
@@ -69,10 +69,10 @@ module.exports = {
       requiredXp: xpNeeded.toString(),
       currentXp: memberStats.xp.toString(),
       showXp: true,
-      shape: 'circle' // circle
+      shape: "circle", // circle
     });
 
     const attachment = new AttachmentBuilder(card, { name: "rank.png" });
     return { files: [attachment] };
-  }
+  },
 };

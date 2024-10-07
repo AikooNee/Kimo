@@ -1,6 +1,6 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 const { EMBED_COLORS } = require("@root/config");
-const axios = require('axios');
+const axios = require("axios");
 
 module.exports = {
   name: "movie",
@@ -50,10 +50,8 @@ async function getMovie(user, choice) {
   const response = await axios.get(`
     http://www.omdbapi.com/?apikey=${process.env.OMDAPI_KEY}&t=${encodeURIComponent(choice)}`);
   const movie = response.data;
-  if (movie.Response === 'False') {
-    const embed = new EmbedBuilder()
-      .setColor(EMBED_COLORS.ERROR)
-      .setDescription("Movie not found!");
+  if (movie.Response === "False") {
+    const embed = new EmbedBuilder().setColor(EMBED_COLORS.ERROR).setDescription("Movie not found!");
     return { embeds: [embed] };
   }
 
@@ -70,7 +68,7 @@ async function getMovie(user, choice) {
       { name: "Awards", value: movie.Awards || "N/A", inline: true },
       { name: "BoxOffice", value: movie.BoxOffice || "N/A", inline: true }
     )
-    .setThumbnail(movie.Poster !== 'N/A' ? movie.Poster : "")
+    .setThumbnail(movie.Poster !== "N/A" ? movie.Poster : "")
     .setColor(EMBED_COLORS.BOT_EMBED);
 
   return { embeds: [embed] };

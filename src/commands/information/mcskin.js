@@ -37,7 +37,7 @@ module.exports = {
 };
 
 function mcskin(context, playerName) {
-  const username = playerName.split(' ')[0];
+  const username = playerName.split(" ")[0];
   const embed = new EmbedBuilder()
     .setColor(EMBED_COLORS.BOT_EMBED)
     .setTitle(`${playerName}'s Minecraft Skin`)

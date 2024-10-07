@@ -44,46 +44,37 @@ module.exports = {
  * @param {number} pgNo
  */
 async function getQueue({ client, guild }, pgNo) {
-  const player = client.musicManager.players.resolve(guild.id);
+  const player = client.manager.getPlayer(guild.id);
   if (!player) return "🚫 There is no music playing in this guild.";
 
-  const queue = player.queue;
-  const embed = new EmbedBuilder()
-    .setColor(EMBED_COLORS.BOT_EMBED)
-    .setAuthor({ name: `Queue for ${guild.name}` });
+  const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setAuthor({ name: `Queue for ${guild.name}` });
 
-  // change for the amount of tracks per page
-  const multiple = 10;
-  const page = pgNo || 1;
+  const end = (pgNo || 1) * 10;
+  const start = end - 10;
 
-  const end = page * multiple;
-  const start = end - multiple;
+  const tracks = player.queue.tracks.slice(start, end);
 
-  const tracks = queue.tracks.slice(start, end);
-
-  if (queue.current) {
-    const currentTrack = queue.current;
-    embed.addFields({ 
-      name: "Current", 
-      value: `[${currentTrack.info.title}](${currentTrack.info.uri}) \`[${client.utils.formatTime(currentTrack.info.length)}]\`` 
-    });
+  if (player.queue.current) {
+    const currentTrack = player.queue.current;
+    embed
+      .addFields({
+        name: "Current",
+        value: `[${currentTrack.info.title}](${currentTrack.info.uri}) \`[${client.utils.formatTime(currentTrack.info.duration)}]\``,
+      })
+      .setThumbnail(currentTrack.info.artworkUrl);
   }
 
-  const queueList = tracks.map((track, index) => {
-    const title = track.info.title;
-    const uri = track.info.uri;
-    const duration = client.utils.formatTime(track.info.length);
-    return `${start + index + 1}. [${title}](${uri}) \`[${duration}]\``;
-  });
+  const queueList = tracks.map(
+    (track, index) =>
+      `${start + index + 1}. [${track.info.title}](${track.info.uri}) \`[${client.utils.formatTime(track.info.duration)}]\``
+  );
 
-  if (!queueList.length) {
-    embed.setDescription(`No tracks in ${page > 1 ? `page ${page}` : "the queue"}.`);
-  } else {
-    embed.setDescription(queueList.join("\n"));
-  }
+  embed.setDescription(
+    queueList.length ? queueList.join("\n") : `No tracks in ${pgNo > 1 ? `page ${pgNo}` : "the queue"}.`
+  );
 
-  const maxPages = Math.ceil(queue.tracks.length / multiple);
-  embed.setFooter({ text: `Page ${page > maxPages ? maxPages : page} of ${maxPages}` });
+  const maxPages = Math.ceil(player.queue.tracks.length / 10);
+  embed.setFooter({ text: `Page ${pgNo > maxPages ? maxPages : pgNo} of ${maxPages}` });
 
   return { embeds: [embed] };
 }

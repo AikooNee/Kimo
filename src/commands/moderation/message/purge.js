@@ -21,9 +21,7 @@ module.exports = {
     const amount = args[0];
 
     if (isNaN(amount)) {
-      const embed = new EmbedBuilder()
-        .setColor(EMBED_COLORS.BOT_EMBED)
-        .setDescription("Numbers are only allowed");
+      const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("Numbers are only allowed");
       return message.safeReply({ embeds: [embed] }, 5);
     }
     if (parseInt(amount) > 99) {

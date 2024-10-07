@@ -1,4 +1,10 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, ApplicationCommandOptionType } = require("discord.js");
+const {
+  EmbedBuilder,
+  ButtonBuilder,
+  ActionRowBuilder,
+  ButtonStyle,
+  ApplicationCommandOptionType,
+} = require("discord.js");
 const { EMBED_COLORS, SUPPORT_SERVER, DASHBOARD } = require("@root/config");
 
 module.exports = {
@@ -24,7 +30,9 @@ module.exports = {
       .setAuthor({ name: "Invite" })
       .setColor(EMBED_COLORS.BOT_EMBED)
       .setThumbnail(message.client.user.displayAvatarURL())
-      .setDescription("Thanks, for giving an invite. Just [Click Me](https://au.aarubot.xyz/invite) or click the below button to help me reach your server");
+      .setDescription(
+        "Thanks, for giving an invite. Just [Click Me](https://au.aarubot.xyz/invite) or click the below button to help me reach your server"
+      );
 
     let components = [
       new ButtonBuilder().setLabel("Invite Link").setURL("https://au.aarubot.xyz").setStyle(ButtonStyle.Link),
@@ -35,7 +43,9 @@ module.exports = {
     }
 
     if (DASHBOARD.enabled) {
-      components.push(new ButtonBuilder().setLabel("Dashboard Link").setURL(DASHBOARD.baseURL).setStyle(ButtonStyle.Link));
+      components.push(
+        new ButtonBuilder().setLabel("Dashboard Link").setURL(DASHBOARD.baseURL).setStyle(ButtonStyle.Link)
+      );
     }
 
     const buttonsRow = new ActionRowBuilder().addComponents(components);
@@ -48,7 +58,9 @@ module.exports = {
       .setAuthor({ name: "Invite" })
       .setColor(EMBED_COLORS.BOT_EMBED)
       .setThumbnail(interaction.client.user.displayAvatarURL())
-      .setDescription("Thanks, for giving an invite. Just [Click Me](https://au.aarubot.xyz/invite) or click the below button to help me reach your server");
+      .setDescription(
+        "Thanks, for giving an invite. Just [Click Me](https://au.aarubot.xyz/invite) or click the below button to help me reach your server"
+      );
 
     let components = [
       new ButtonBuilder().setLabel("Invite Link").setURL(interaction.client.getInvite()).setStyle(ButtonStyle.Link),
@@ -59,7 +71,9 @@ module.exports = {
     }
 
     if (DASHBOARD.enabled) {
-      components.push(new ButtonBuilder().setLabel("Dashboard Link").setURL(DASHBOARD.baseURL).setStyle(ButtonStyle.Link));
+      components.push(
+        new ButtonBuilder().setLabel("Dashboard Link").setURL(DASHBOARD.baseURL).setStyle(ButtonStyle.Link)
+      );
     }
 
     const buttonsRow = new ActionRowBuilder().addComponents(components);

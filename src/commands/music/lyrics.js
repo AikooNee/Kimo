@@ -29,9 +29,6 @@ module.exports = {
 
   async messageRun(message, args) {
     const choice = args.join(" ");
-    if (!choice) {
-      return message.safeReply("Invalid Lyric selected.");
-    }
     const response = await getLyric(message.author, choice);
     return message.safeReply(response);
   },
@@ -44,13 +41,13 @@ module.exports = {
 };
 
 async function getLyric(user, choice) {
-  const genius = new GeniusClient({ accessToken: process.env.GENIUS_API});
-  const track = await genius.getSong({title: choice, authHeader: true, optimizeQuery: true});
+  const genius = new GeniusClient({ accessToken: process.env.GENIUS_API });
+  const track = await genius.getSong({ title: choice, authHeader: true, optimizeQuery: true });
 
   if (!track) {
     const embed = new EmbedBuilder()
       .setColor(EMBED_COLORS.ERROR)
-      .setDescription("Song not found, ensure that you entered correct song name.");
+      .setDescription("Song not found, ensure that you entered correct song name");
     return { embeds: [embed] };
   }
 

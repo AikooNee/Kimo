@@ -18,18 +18,16 @@ module.exports = (member) => {
     .setColor(EMBED_COLORS.BOT_EMBED)
     .setDescription(
       `**Display name:** ${member.user.displayName}\n` +
-      `**User name:** ${member.user.username}\n` +
-      `**Joined (${member.guild.name}):** <t:${Math.floor(member.joinedTimestamp / 1000)}:R>\n` +
-      `**Create at:** <t:${Math.floor(member.user.createdTimestamp / 1000)}:R>\n` +
-      `**Bot:** ${isBot}\n` +
-      `**Booster this server:** ${isBooster}\n`
+        `**User name:** ${member.user.username}\n` +
+        `**Joined (${member.guild.name}):** <t:${Math.floor(member.joinedTimestamp / 1000)}:R>\n` +
+        `**Create at:** <t:${Math.floor(member.user.createdTimestamp / 1000)}:R>\n` +
+        `**Bot:** ${isBot}\n` +
+        `**Booster this server:** ${isBooster}\n`
     )
-    .addFields(
-      {
-        name: `Roles [${member.roles.cache.size}]`,
-        value: `${rolesMentions}\n**Top roles:** ${topRole.toString()}`
-      }
-    )
+    .addFields({
+      name: `Roles [${member.roles.cache.size}]`,
+      value: `${rolesMentions}\n**Top roles:** ${topRole.toString()}`,
+    })
     .setFooter({ text: `Requested by ${member.user.tag}` })
     .setTimestamp();
 

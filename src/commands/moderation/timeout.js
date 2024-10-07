@@ -62,9 +62,7 @@ module.exports = {
 
     const reason = args.slice(2).join(" ").trim();
     const response = await timeout(message.member, target, ms, reason);
-    const embed = new EmbedBuilder()
-      .setColor(EMBED_COLORS.BOT_EMBED)
-      .setDescription(response);
+    const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(response);
     await message.safeReply({ embeds: [embed] });
   },
 
@@ -85,9 +83,7 @@ module.exports = {
     const target = await interaction.guild.members.fetch(user.id);
 
     const response = await timeout(interaction.member, target, ms, reason);
-    const embed = new EmbedBuilder()
-      .setColor(EMBED_COLORS.BOT_EMBED)
-      .setDescription(response);
+    const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(response);
     await interaction.followUp({ embeds: [embed] });
   },
 };

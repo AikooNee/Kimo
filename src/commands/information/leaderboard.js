@@ -24,7 +24,7 @@ module.exports = {
         type: ApplicationCommandOptionType.String,
         choices: [
           { name: "xp", value: "xp" },
-          { name: "invite", value: "invite" }
+          { name: "invite", value: "invite" },
         ],
       },
     ],
@@ -60,20 +60,22 @@ async function getLeaderboard(source, type, settings, UwU) {
     return uwuEmbed(uwuMessage);
   }
 
-  const collector = await Promise.all(lbData.map(async (data, index) => {
-    try {
-      const user = await source.client.users.fetch(data.member_id);
-      const uwuName = `<@${user.id}>`;
-      return `**#${index + 1}** - ${escapeInlineCode(uwuName)} ${type === "xp" ? "XP" : "Invites"}: ${type === "xp" ? data.xp : data.invites}\n`;
-    } catch {
-      return null;
-    }
-  }));
+  const collector = await Promise.all(
+    lbData.map(async (data, index) => {
+      try {
+        const user = await source.client.users.fetch(data.member_id);
+        const uwuName = `<@${user.id}>`;
+        return `**#${index + 1}** - ${escapeInlineCode(uwuName)} ${type === "xp" ? "XP" : "Invites"}: ${type === "xp" ? data.xp : data.invites}\n`;
+      } catch {
+        return null;
+      }
+    })
+  );
 
   const embed = new EmbedBuilder()
     .setTitle(`${type.charAt(0).toUpperCase() + type.slice(1)} Leaderboard`)
     .setColor(EMBED_COLORS.BOT_EMBED)
-    .setDescription(collector.filter(Boolean).join(''))
+    .setDescription(collector.filter(Boolean).join(""))
     .setFooter({ text: `Requested by ${UwU}` });
 
   return { embeds: [embed] };
@@ -92,10 +94,6 @@ async function fetchLeaderboardData(type, guildId, limit) {
 
 function uwuEmbed(description) {
   return {
-    embeds: [
-      new EmbedBuilder()
-        .setDescription(description)
-        .setColor(EMBED_COLORS.ERROR)
-    ]
+    embeds: [new EmbedBuilder().setDescription(description).setColor(EMBED_COLORS.ERROR)],
   };
 }

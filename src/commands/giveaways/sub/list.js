@@ -7,7 +7,9 @@ const { EMBED_COLORS } = require("@root/config");
 module.exports = async (member) => {
   // Permissions
   if (!member.permissions.has("ManageMessages")) {
-    return new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("Sorry, senpai! You need the 'Manage Messages' permission to manage giveaways.");
+    return new EmbedBuilder()
+      .setColor(EMBED_COLORS.BOT_EMBED)
+      .setDescription("Sorry, senpai! You need the 'Manage Messages' permission to manage giveaways.");
   }
 
   // Search with all giveaways
@@ -17,7 +19,9 @@ module.exports = async (member) => {
 
   // No giveaways
   if (giveaways.length === 0) {
-    return new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("Senpai, there are no giveaways running in this server.");
+    return new EmbedBuilder()
+      .setColor(EMBED_COLORS.BOT_EMBED)
+      .setDescription("Senpai, there are no giveaways running in this server.");
   }
 
   const description = giveaways.map((g, i) => `${i + 1}. ${g.prize} in <#${g.channelId}>`).join("\n");
@@ -28,6 +32,8 @@ module.exports = async (member) => {
     };
   } catch (error) {
     member.client.logger.error("Giveaway List", error);
-    return new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(`Senpai, an error occurred while listing the giveaways: ${error.message} 💔`);
+    return new EmbedBuilder()
+      .setColor(EMBED_COLORS.BOT_EMBED)
+      .setDescription(`Senpai, an error occurred while listing the giveaways: ${error.message} 💔`);
   }
 };

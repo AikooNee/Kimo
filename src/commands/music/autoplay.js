@@ -1,4 +1,6 @@
 const { musicValidations } = require("@helpers/BotUtils");
+const { autoplayFunction } = require("@handlers/player");
+const { EMBED_COLORS } = require("@root/config");
 const { EmbedBuilder } = require("discord.js");
 
 /**
@@ -31,24 +33,27 @@ module.exports = {
 };
 
 async function toggleAutoplay({ client, guildId }) {
-  const player = client.musicManager.players.resolve(guildId);
+  const player = client.manager.getPlayer(guildId);
 
-  // Check if there is a song currently playing
   if (!player || !player.queue.current) {
-    const embed = new EmbedBuilder()
-      .setColor(client.config.EMBED_COLORS.ERROR)
-      .setDescription("No song is currently playing.");
-
-    return { embeds: [embed] };
+    return {
+      embeds: [
+        new EmbedBuilder().setColor(client.config.EMBED_COLORS.ERROR).setDescription("No song is currently playing"),
+      ],
+    };
   }
 
-  const isAutoplay = player.autoplay;
-  player.autoplay = !isAutoplay;
+  const state = player.get("autoplay");
+  player.set("autoplay", !state);
 
-  const description = `Autoplay has been ${!isAutoplay ? "enabled" : "disabled"}.`;
-  const embed = new EmbedBuilder()
-    .setColor(client.config.EMBED_COLORS.BOT_EMBED)
-    .setDescription(description);
+  if (state) {
+    return {
+      embeds: [new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("Autoplay deactivated")],
+    };
+  }
 
-  return { embeds: [embed] };
+  autoplayFunction(client, player.queue.current, player);
+  return {
+    embeds: [new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("Autoplay activated!")],
+  };
 }

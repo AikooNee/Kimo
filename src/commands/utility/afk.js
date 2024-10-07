@@ -46,12 +46,12 @@ async function afkSet(user, reason, data) {
     reason: reason || "No reason provided",
     afktime: new Date(),
   });
-                         
+
   await data.settings.save();
-    
+
   const embed = new EmbedBuilder()
     .setColor(EMBED_COLORS.BOT_EMBED)
     .setDescription(`You have been set as afk for: ${reason || "No reason provided"}`);
-  
+
   return { embeds: [embed] };
 }

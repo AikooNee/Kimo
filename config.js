@@ -1,16 +1,16 @@
 
 module.exports = {
-  OWNER_IDS: [""], // Bot owner ID's
-  SUPPORT_SERVER: "", // Your bot support server
+  OWNER_IDS: ["1165609918326382656"],
+  SUPPORT_SERVER: "",
   PREFIX_COMMANDS: {
-    ENABLED: true, // Enable/Disable prefix commands
-    DEFAULT_PREFIX: "", // Default prefix for the bot
+    ENABLED: true,
+    DEFAULT_PREFIX: "+",
   },
   INTERACTIONS: {
-    SLASH: true, // Should the interactions be enabled
-    CONTEXT: true, // Should contexts be enabled
-    GLOBAL: true, // Should the interactions be registered globally
-    TEST_GUILD_ID: "", // Guild ID where the interactions should be registered. [** Test your commands here first **]
+    SLASH: true,
+    CONTEXT: true,
+    GLOBAL: true,
+    TEST_GUILD_ID: "", 
   },
   EMBED_COLORS: {
     BOT_EMBED: "#79F0FF",
@@ -28,18 +28,16 @@ module.exports = {
     API_ERROR: "Unexpected Backend Error! Try again later or contact support server",
   },
 
-  // AI CHATBOT 
   AI_CHAT: {
     ENABLED: true,
     MODEL: "gemini-1.5-flash",
     DEFAULT_LANG: "en",
     TRANSLATE: true,
-    COOLDOWN: 10, // 10 seconds
+    COOLDOWN: 10,
     ANTI_LINKS: false,
     MAX_HISTORY: 6,
   },
-    
-  // PLUGINS
+ 
   AUTOMOD: {
     ENABLED: true,
     LOG_EMBED: "#36393F",
@@ -48,26 +46,25 @@ module.exports = {
 
   MUSIC: {
     ENABLED: true,
-    IDLE_TIME: 120, // Time in seconds before the bot disconnects from an idle voice channel
-    MAX_SEARCH_RESULTS: 5,
-    DEFAULT_VOLUME: 60, // Default volume for the music player (0-100)
-    DEFAULT_SOURCE: "ytsearch", // ytsearch = Youtube, ytmsearch = Youtube Music, spsearch = Spotify, scsearch = SoundCloud
-    // Add any number of Lavalink nodes here
+    IDLE_TIME: 120,
+    DEFAULT_VOLUME: 80,
+    DEFAULT_ENGINE: "spsearch",
     LAVALINK_NODES: [
       {
-        info: {
-          host: "localhost;8080",
-          auth: "secret",
-          port: 443,
-        },
-        identifier: "Kimo",
+        id: "Local Node",
+        host: "localhost",
+        port: 2333,
+        authorization: "youshallnotpass",
+        secure: false,
+        retryAmount: 20,
+        retryDelay: 30000,
       },
     ],
   },
     
   GIVEAWAYS: {
     ENABLED: true,
-    REACTION: "🎁",
+    REACTION: "🎉",
     START_EMBED: "#FF468A",
     END_EMBED: "#FF468A",
   },
@@ -94,16 +91,9 @@ module.exports = {
     },
   },
 
-  PRESENCE: {
-    ENABLED: true, // Whether or not the bot should update its status
-    STATUS: "online", // The bot's status [online, idle, dnd, invisible]
-    TYPE: "LISTENING", // Status type for the bot [PLAYING | LISTENING | WATCHING | COMPETING]
-    MESSAGE: "Sensei <3", // Your bot status message
-  },
-
   STATS: {
     ENABLED: true,
-    XP_COOLDOWN: 5, // Cooldown in seconds between messages
+    XP_COOLDOWN: 5,
     DEFAULT_LVL_UP_MSG: "{member:mention}, You just advanced to **Level {level}**",
   },
 };

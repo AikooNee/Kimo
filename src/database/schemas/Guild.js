@@ -100,8 +100,9 @@ const Schema = new mongoose.Schema({
   },
   music: {
     stay: {
-      enabled: Boolean,
-      channel: String,
+      enabled: { type: Boolean, default: false },
+      voiceId: String,
+      textId: String,
     },
   },
   autoroles: [String],
@@ -109,13 +110,15 @@ const Schema = new mongoose.Schema({
     channel: String,
     language: { type: String, default: "en" },
   },
-  afk: [{
-    userId: String,
-    status: { type: Boolean, default: false },
-    reason: String,
-    msglink: [String],
-    afktime: Date,
-  }],
+  afk: [
+    {
+      userId: String,
+      status: { type: Boolean, default: false },
+      reason: String,
+      msglink: [String],
+      afktime: Date,
+    },
+  ],
   snipe: {
     channel: String,
     username: String,

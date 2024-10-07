@@ -38,16 +38,9 @@ async function chatbot(client, message, settings) {
   let data = users.get(message.author.id) || { cooldown: 0, chat: [] };
 
   if (Date.now() - data.cooldown < AI_CHAT.COOLDOWN * 1000) {
-    const remaining = Math.ceil(
-      (AI_CHAT.COOLDOWN * 1000 - (Date.now() - data.cooldown)) / 1000
-    );
-    const msg = await message.safeReply(
-      `Please wait ${remaining} more seconds before chatting again.`
-    );
-    return setTimeout(
-      () => msg.deletable && msg.delete().catch(() => {}),
-      5000
-    );
+    const remaining = Math.ceil((AI_CHAT.COOLDOWN * 1000 - (Date.now() - data.cooldown)) / 1000);
+    const msg = await message.safeReply(`Please wait ${remaining} more seconds before chatting again.`);
+    return setTimeout(() => msg.deletable && msg.delete().catch(() => {}), 5000);
   }
 
   data.cooldown = Date.now();
@@ -60,10 +53,7 @@ async function chatbot(client, message, settings) {
       });
     }
 
-    if (
-      data.chat.length >= 2 &&
-      data.chat[data.chat.length - 2].parts[0].text === content
-    ) {
+    if (data.chat.length >= 2 && data.chat[data.chat.length - 2].parts[0].text === content) {
       return message.safeReply(data.chat[data.chat.length - 1].parts[0].text);
     }
 
@@ -73,10 +63,9 @@ async function chatbot(client, message, settings) {
     if (attachment) {
       const imagePart = {
         inlineData: {
-          data: Buffer.from(
-            (await axios.get(attachment.url, { responseType: "arraybuffer" })).data,
-            "binary"
-          ).toString("base64"),
+          data: Buffer.from((await axios.get(attachment.url, { responseType: "arraybuffer" })).data, "binary").toString(
+            "base64"
+          ),
           mimeType: attachment.contentType,
         },
       };
@@ -87,21 +76,14 @@ async function chatbot(client, message, settings) {
 
     let reply = result.response.text();
 
-    data.chat.push(
-      { role: "user", parts: [{ text: content }] },
-      { role: "model", parts: [{ text: reply }] }
-    );
+    data.chat.push({ role: "user", parts: [{ text: content }] }, { role: "model", parts: [{ text: reply }] });
 
     if (data.chat.length > (AI_CHAT.MAX_HISTORY || 5) * 2) {
       data.chat = data.chat.slice(-(AI_CHAT.MAX_HISTORY || 5) * 2);
     }
 
     if (AI_CHAT.TRANSLATE) {
-      reply = await aaruTranslator.translate(
-        "auto",
-        settings.chatbot.language || AI_CHAT.DEFAULT_LANG,
-        reply
-      );
+      reply = await aaruTranslator.translate("auto", settings.chatbot.language || AI_CHAT.DEFAULT_LANG, reply);
     }
 
     if (AI_CHAT.ANTI_LINKS) {

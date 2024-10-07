@@ -22,15 +22,18 @@ module.exports = async (client, invite) => {
     .setColor("Green")
     .setTitle(`Invite created (${invite.code}) for ${invite.channel}`)
     .setDescription(`${invite.url}`)
-    .addFields({
-      name: "Expires in",
-      value: invite.maxAge === 0 ? `Never` : require("@helpers/Utils").timeformat(invite.maxAge)
-    }, {
-      name: "Max uses",
-      value: `${invite.maxUses || "Unlimited"}`
-    })
+    .addFields(
+      {
+        name: "Expires in",
+        value: invite.maxAge === 0 ? `Never` : require("@helpers/Utils").timeformat(invite.maxAge),
+      },
+      {
+        name: "Max uses",
+        value: `${invite.maxUses || "Unlimited"}`,
+      }
+    )
     .setTimestamp()
-    .setFooter({ text: `ID: ${invite.code} | Created by: ${invite.inviter.username}` })
+    .setFooter({ text: `ID: ${invite.code} | Created by: ${invite.inviter.username}` });
 
-  logChannel.send({ embeds: [embed] })
+  logChannel.send({ embeds: [embed] });
 };

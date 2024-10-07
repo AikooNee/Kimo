@@ -21,34 +21,18 @@ module.exports = (client) => {
   client.ws.on(GatewayDispatchEvents.VoiceServerUpdate, (data) => lavaclient.players.handleVoiceUpdate(data));
 
   // Buttons for music player controls
-  let bPause = new ButtonBuilder()
-    .setCustomId("Button_Pause")
-    .setStyle(ButtonStyle.Secondary)
-    .setEmoji("⏸️");
-  let bSkip = new ButtonBuilder()
-    .setCustomId("Button_Skip")
-    .setStyle(ButtonStyle.Secondary)
-    .setEmoji("⏭️");
-  let bStop = new ButtonBuilder()
-    .setCustomId("Button_Stop")
-    .setStyle(ButtonStyle.Secondary)
-    .setEmoji("⏹");
-  let bLoop = new ButtonBuilder()
-    .setCustomId("Button_Loop")
-    .setStyle(ButtonStyle.Secondary)
-    .setEmoji("🔁");
-  let bShuffle = new ButtonBuilder()
-    .setCustomId("Button_Shuffle")
-    .setStyle(ButtonStyle.Secondary)
-    .setEmoji("🔀");
+  let bPause = new ButtonBuilder().setCustomId("Button_Pause").setStyle(ButtonStyle.Secondary).setEmoji("⏸️");
+  let bSkip = new ButtonBuilder().setCustomId("Button_Skip").setStyle(ButtonStyle.Secondary).setEmoji("⏭️");
+  let bStop = new ButtonBuilder().setCustomId("Button_Stop").setStyle(ButtonStyle.Secondary).setEmoji("⏹");
+  let bLoop = new ButtonBuilder().setCustomId("Button_Loop").setStyle(ButtonStyle.Secondary).setEmoji("🔁");
+  let bShuffle = new ButtonBuilder().setCustomId("Button_Shuffle").setStyle(ButtonStyle.Secondary).setEmoji("🔀");
 
-  const buttonRow = new ActionRowBuilder()
-    .addComponents(bLoop, bPause, bStop, bSkip, bShuffle);
+  const buttonRow = new ActionRowBuilder().addComponents(bLoop, bPause, bStop, bSkip, bShuffle);
 
   lavaclient.on("nodeConnected", async (node) => {
     client.logger.log(`Node "${node.identifier}" connected`);
     let count = 0;
-      
+
     for (const guild of client.guilds.cache.values()) {
       const settings = await getSettings(guild);
       if (settings.music.stay.enabled && settings.music.stay.channel) {
@@ -124,7 +108,7 @@ module.exports = (client) => {
           .setTitle("Queue Ended")
           .setDescription("Queue has ended. **24/7 mode is on so I haven't left.**");
         const message = await queue.data.channel.send({ embeds: [embed] });
-        
+
         setTimeout(() => {
           if (message.deletable) message.delete().catch(() => {});
         }, 30000);
@@ -144,25 +128,25 @@ module.exports = (client) => {
       }
     }
 
-    await client.utils.vcUpdate(queue.player.voice.channelId, '', client);
+    await client.utils.vcUpdate(queue.player.voice.channelId, "", client);
   };
 
   lavaclient.on("nodeQueueFinish", async (_node, queue) => {
     await handleConclude(queue);
   });
 
-  lavaclient.on('playerDestroy', async (player) => {
+  lavaclient.on("playerDestroy", async (player) => {
     const queue = player.queue;
     if (queue) {
       await handleConclude(queue);
     }
   });
 
-  lavaclient.on('playerPaused', async (player, track) => {
+  lavaclient.on("playerPaused", async (player, track) => {
     await client.utils.vcUpdate(player.voice.channelId, `Paused **${track.info.title}**`, client);
   });
 
-  lavaclient.on('playerResumed', async (player, track) => {
+  lavaclient.on("playerResumed", async (player, track) => {
     await client.utils.vcUpdate(player.voice.channelId, `Playing **${track.info.title}**`, client);
   });
 
@@ -201,8 +185,12 @@ module.exports = (client) => {
 
     while (count < maxtry) {
       const aspiringChoice = metadata[Math.floor(Math.random() * metadata.length)];
-      if (!(player.queue.tracks.some((s) => s.encoded === aspiringChoice.encoded) ||
-        songHistory.some((s) => s.encoded === aspiringChoice.encoded))) {
+      if (
+        !(
+          player.queue.tracks.some((s) => s.encoded === aspiringChoice.encoded) ||
+          songHistory.some((s) => s.encoded === aspiringChoice.encoded)
+        )
+      ) {
         pick = aspiringChoice;
         break;
       }

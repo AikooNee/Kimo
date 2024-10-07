@@ -2,7 +2,7 @@
 Created by Arya
 Don't forget to give me credit
 */
-const { EmbedBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
+const { EmbedBuilder, PermissionFlagsBits, ChannelType } = require("discord.js");
 const { EMBED_COLORS } = require("@root/config");
 
 module.exports = {
@@ -17,16 +17,14 @@ module.exports = {
     usage: "<guildID>",
     minArgsCount: 1,
   },
-    
+
   async messageRun(message, args, data) {
     const guildID = args[0];
 
     if (!guildID) {
       return message.channel.send({
         embeds: [
-          new EmbedBuilder()
-            .setColor(EMBED_COLORS.BOT_EMBED)
-            .setDescription('Please provide a valid guild ID.'),
+          new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("Please provide a valid guild ID."),
         ],
       });
     }
@@ -35,11 +33,7 @@ module.exports = {
 
     if (!guild) {
       return message.channel.send({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(EMBED_COLORS.BOT_EMBED)
-            .setDescription('Guild not found.'),
-        ],
+        embeds: [new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("Guild not found.")],
       });
     }
 
@@ -48,10 +42,9 @@ module.exports = {
       if (
         channel &&
         channel.type === ChannelType.GuildText &&
-        channel.permissionsFor(message.client.user).has([
-          PermissionFlagsBits.SendMessages,
-          PermissionFlagsBits.ViewChannel,
-        ]) &&
+        channel
+          .permissionsFor(message.client.user)
+          .has([PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel]) &&
         !mainChannel
       ) {
         mainChannel = channel;
@@ -61,15 +54,13 @@ module.exports = {
     if (!mainChannel) {
       return message.channel.send({
         embeds: [
-          new EmbedBuilder()
-            .setColor(EMBED_COLORS.BOT_EMBED)
-            .setDescription('Unable to find a suitable text channel.'),
+          new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("Unable to find a suitable text channel."),
         ],
       });
     }
 
     let invite;
-    const reason = 'Improvement purposes';
+    const reason = "Improvement purposes";
     try {
       invite = await mainChannel.createInvite({
         maxAge: 3600, // if you want the invite link to never expire, then use 0 🥰
@@ -78,18 +69,18 @@ module.exports = {
         reason: reason,
       });
     } catch (error) {
-     // console.error("Error creating invite:", error); ignoring console errors
+      // console.error("Error creating invite:", error); ignoring console errors
       invite = null;
     }
 
-    const inviteUrl = invite && typeof invite === 'object' && invite.url ? invite.url : null;
+    const inviteUrl = invite && typeof invite === "object" && invite.url ? invite.url : null;
 
     return message.channel.send({
       embeds: [
         new EmbedBuilder()
           .setColor(EMBED_COLORS.BOT_EMBED)
-          .setDescription(inviteUrl ? `Invite link for ${guild.name} [Link](${inviteUrl})` : 'Unable to fetch invite'),
+          .setDescription(inviteUrl ? `Invite link for ${guild.name} [Link](${inviteUrl})` : "Unable to fetch invite"),
       ],
     });
-  }
+  },
 };

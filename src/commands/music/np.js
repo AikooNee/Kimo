@@ -29,26 +29,24 @@ module.exports = {
   },
 };
 
-async function nowPlaying({ client, guildId}) {
-  const player = client.musicManager.players.resolve(guildId);
+async function nowPlaying({ client, guildId }) {
+  const player = client.manager.getPlayer(guildId);
   if (!player || !player.queue.current) return "No music is being played!";
 
   const track = player.queue.current;
-  const duration = track.info.length;
-  const position = player.position;
 
   const musicard = await Classic({
     thumbnailImage: track.info.artworkUrl,
     backgroundColor: "#070707",
-    progress: (position / duration) * 100,
+    progress: (player.position / track.info.duration) * 100,
     progressColor: "#79F0FF",
     progressBarColor: "#696969",
     name: track.info.title,
     nameColor: "#79F0FF",
     author: `By ${track.info.author}`,
     authorColor: "#696969",
-    startTime: client.utils.formatTime(position),
-    endTime: client.utils.formatTime(duration),
+    startTime: client.utils.formatTime(player.position),
+    endTime: client.utils.formatTime(track.info.duration),
     timeColor: "#696969",
   });
 
@@ -56,7 +54,7 @@ async function nowPlaying({ client, guildId}) {
     .setColor(EMBED_COLORS.TRANSPARENT)
     .setAuthor({ name: `Now playing ${track.info.title}` })
     .setImage("attachment://uwu.png")
-    .setFooter({ text: `Requested by: ${track.requesterId}` });
+    .setFooter({ text: `Requested by: ${track.requester.username}` });
 
   return { embeds: [embed], files: [new AttachmentBuilder(musicard, { name: "uwu.png" })] };
 }

@@ -31,7 +31,7 @@ module.exports = {
 
   async messageRun(message, args) {
     let code = args.join(" ");
-    const flags = args.filter(arg => arg.startsWith("--"));
+    const flags = args.filter((arg) => arg.startsWith("--"));
 
     if (flags.length > 0 && flags.includes("--async")) {
       code = `(async () => { return ${args.join(" ")} })()`;
@@ -51,7 +51,7 @@ module.exports = {
 
   async interactionRun(interaction) {
     let code = interaction.options.getString("expression");
-    const flags = code.split(" ").filter(arg => arg.startsWith("--"));
+    const flags = code.split(" ").filter((arg) => arg.startsWith("--"));
 
     if (flags.length > 0 && flags.includes("--async")) {
       code = `(async () => { return ${code} })()`;

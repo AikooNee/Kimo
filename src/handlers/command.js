@@ -27,9 +27,7 @@ module.exports = {
     if (cmd.validations) {
       for (const validation of cmd.validations) {
         if (!validation.callback(message)) {
-          const embed = new EmbedBuilder()
-            .setColor(EMBED_COLORS.ERROR)
-            .setDescription(validation.message);
+          const embed = new EmbedBuilder().setColor(EMBED_COLORS.ERROR).setDescription(validation.message);
           return message.safeReply({ embeds: [embed] });
         }
       }
@@ -104,9 +102,7 @@ module.exports = {
     if (cmd.validations) {
       for (const validation of cmd.validations) {
         if (!validation.callback(interaction)) {
-          const embed = new EmbedBuilder()
-            .setColor(EMBED_COLORS.ERROR)
-            .setDescription(validation.message);
+          const embed = new EmbedBuilder().setColor(EMBED_COLORS.ERROR).setDescription(validation.message);
           return interaction.reply({ embeds: [embed], ephemeral: true });
         }
       }

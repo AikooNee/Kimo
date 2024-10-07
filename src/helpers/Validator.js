@@ -33,10 +33,10 @@ module.exports = class Validator {
       }
     }
 
-      // Warnings
+    // Warnings
     if (config.OWNER_IDS.length === 0) warn("config.js: OWNER_IDS are empty");
   }
-    
+
   /**
    * @param {import('@structures/Command')} cmd
    */

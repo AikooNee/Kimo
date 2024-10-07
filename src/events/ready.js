@@ -1,6 +1,7 @@
-const { counterHandler, inviteHandler, presenceHandler } = require("@src/handlers");
+const { counterHandler, inviteHandler } = require("@src/handlers");
 const { cacheReactionRoles } = require("@schemas/ReactionRoles");
 const { getSettings } = require("@schemas/Guild");
+const { ActivityType } = require("discord.js");
 
 /**
  * @param {import('@src/structures').BotClient} client
@@ -10,7 +11,7 @@ module.exports = async (client) => {
 
   // Initialize Music Manager
   if (client.config.MUSIC.ENABLED) {
-    client.musicManager.connect({ userId: client.user.id });
+    client.manager.init({ ...client.user, shards: "auto" });
     client.logger.success("Music Manager initialized");
   }
 
@@ -20,10 +21,16 @@ module.exports = async (client) => {
     client.giveawaysManager._init().then((_) => client.logger.success("Giveaway Manager initialized"));
   }
 
-  // Update Bot Presence
-  if (client.config.PRESENCE.ENABLED) {
-    presenceHandler(client);
-  }
+  // Set Bot Presence directly
+  client.user.setPresence({
+    status: "online",
+    activities: [
+      {
+        name: "Senpai | /help", // Activity name
+        type: ActivityType.Listening, // Activity type
+      },
+    ],
+  });
 
   // Register Interactions
   if (client.config.INTERACTIONS.SLASH || client.config.INTERACTIONS.CONTEXT) {

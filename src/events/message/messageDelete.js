@@ -13,16 +13,16 @@ module.exports = async (client, message) => {
 
   /*const policy = await Policy.findOne({ userId: message.author.id });
   if (policy && policy.accepted) {*/
-    const snipe = {
-      channel: message.channel.id,
-      username: message.member.displayName,
-      content: message.content || "unknown",
-      userAvatar: message.author.displayAvatarURL(),
-      deletedAt: new Date(),
-    };
+  const snipe = {
+    channel: message.channel.id,
+    username: message.member.displayName,
+    content: message.content || "unknown",
+    userAvatar: message.author.displayAvatarURL(),
+    deletedAt: new Date(),
+  };
 
-    settings.snipe = snipe;
-    await settings.save();
+  settings.snipe = snipe;
+  await settings.save();
   //}
 
   if (!settings.logging.messages) return;
@@ -49,6 +49,6 @@ module.exports = async (client, message) => {
       { name: "Deleted By", value: user ? user : "Unknown" }
     )
     .setTimestamp();
-    
+
   logChannel.safeSend({ embeds: [logEmbed] });
 };

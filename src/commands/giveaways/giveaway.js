@@ -180,32 +180,25 @@ module.exports = {
       const match = message.guild.findMatchingChannels(args[1]);
       if (!match.length) return message.safeReply(`No channel found matching ${args[1]}`);
       return await runModalSetup(message, match[0]);
-    }
-    else if (sub === "pause") {
+    } else if (sub === "pause") {
       const messageId = args[1];
       response = await pause(message.member, messageId);
-    }
-    else if (sub === "resume") {
+    } else if (sub === "resume") {
       const messageId = args[1];
       response = await resume(message.member, messageId);
-    }
-    else if (sub === "end") {
+    } else if (sub === "end") {
       const messageId = args[1];
       response = await end(message.member, messageId);
-    }
-    else if (sub === "reroll") {
+    } else if (sub === "reroll") {
       const messageId = args[1];
       response = await reroll(message.member, messageId);
-    }
-    else if (sub === "list") {
+    } else if (sub === "list") {
       response = await list(message.member);
-    }
-    else if (sub === "edit") {
+    } else if (sub === "edit") {
       const messageId = args[1];
       if (!messageId) return message.safeReply("Incorrect usage! Please provide a message id");
       return await runModalEdit(message, messageId);
-    }
-    else response = "Not a valid sub command";
+    } else response = "Not a valid sub command";
 
     await message.safeReply(response);
   },
@@ -218,27 +211,21 @@ module.exports = {
       const channel = interaction.options.getChannel("channel");
       await interaction.followUp("Starting Giveaway system...");
       return await runModalSetup(interaction, channel);
-    }
-    else if (sub === "pause") {
+    } else if (sub === "pause") {
       const messageId = interaction.options.getString("message_id");
       response = await pause(interaction.member, messageId);
-    }
-    else if (sub === "resume") {
+    } else if (sub === "resume") {
       const messageId = interaction.options.getString("message_id");
       response = await resume(interaction.member, messageId);
-    }
-    else if (sub === "end") {
+    } else if (sub === "end") {
       const messageId = interaction.options.getString("message_id");
       response = await end(interaction.member, messageId);
-    }
-    else if (sub === "reroll") {
+    } else if (sub === "reroll") {
       const messageId = interaction.options.getString("message_id");
       response = await reroll(interaction.member, messageId);
-    }
-    else if (sub === "list") {
+    } else if (sub === "list") {
       response = await list(interaction.member);
-    }
-    else if (sub === "edit") {
+    } else if (sub === "edit") {
       const messageId = interaction.options.getString("message_id");
       const addDur = interaction.options.getInteger("add_duration");
       const addDurationMs = addDur ? ems(addDur) : null;
@@ -249,8 +236,7 @@ module.exports = {
       const newWinnerCount = interaction.options.getInteger("new_winners");
       const description = interaction.options.getString("description");
       response = await edit(interaction.member, messageId, addDurationMs, newPrize, newWinnerCount, description);
-    }
-    else response = "Invalid subcommand";
+    } else response = "Invalid subcommand";
 
     await interaction.followUp(response);
   },

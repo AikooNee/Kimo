@@ -63,7 +63,7 @@ module.exports = {
             description: "Choose language",
             required: false,
             type: ApplicationCommandOptionType.String,
-            choices: languages.map(lang => ({ name: lang.name, value: lang.value })),
+            choices: languages.map((lang) => ({ name: lang.name, value: lang.value })),
           },
         ],
       },
@@ -82,7 +82,7 @@ module.exports = {
             description: "Choose language",
             required: true,
             type: ApplicationCommandOptionType.String,
-            choices: languages.map(lang => ({ name: lang.name, value: lang.value })),
+            choices: languages.map((lang) => ({ name: lang.name, value: lang.value })),
           },
         ],
       },
@@ -100,7 +100,7 @@ module.exports = {
   async interactionRun(interaction, data) {
     const response = await chatbot(data, interaction);
     await interaction.followUp(response);
-  }
+  },
 };
 
 /**
@@ -123,13 +123,13 @@ async function chatbot(data, interaction) {
       const embed = new EmbedBuilder()
         .setColor(EMBED_COLORS.SUCCESS)
         .setDescription(`Chatbot channel set to ${Chatchannel} with language ${langName}.`);
-      
+
       return { embeds: [embed] };
     } else {
       const embed = new EmbedBuilder()
         .setColor(EMBED_COLORS.ERROR)
         .setDescription(`Chatbot is already set in this guild. Current channel: <#${settings.chatbot.channel}>`);
-      
+
       return { embeds: [embed] };
     }
   } else if (subcommand === "remove") {
@@ -137,7 +137,7 @@ async function chatbot(data, interaction) {
       const embed = new EmbedBuilder()
         .setColor(EMBED_COLORS.ERROR)
         .setDescription("No chatbot setup found in this guild.");
-      
+
       return { embeds: [embed] };
     }
 
@@ -156,7 +156,7 @@ async function chatbot(data, interaction) {
       const embed = new EmbedBuilder()
         .setColor(EMBED_COLORS.ERROR)
         .setDescription("No chatbot setup found in this guild.");
-      
+
       return { embeds: [embed] };
     }
 
@@ -164,7 +164,7 @@ async function chatbot(data, interaction) {
       const embed = new EmbedBuilder()
         .setColor(EMBED_COLORS.ERROR)
         .setDescription(`Chatbot language is already set to ${getLangName(language)}.`);
-      
+
       return { embeds: [embed] };
     }
 
@@ -175,7 +175,7 @@ async function chatbot(data, interaction) {
     const embed = new EmbedBuilder()
       .setColor(EMBED_COLORS.SUCCESS)
       .setDescription(`Chatbot language updated to ${langName}.`);
-    
+
     return { embeds: [embed] };
   }
 }
@@ -186,6 +186,6 @@ async function chatbot(data, interaction) {
  * @returns {string} - Language name
  */
 function getLangName(code) {
-  const language = languages.find(lang => lang.value === code);
+  const language = languages.find((lang) => lang.value === code);
   return language ? language.name : "English";
 }

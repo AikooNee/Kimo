@@ -2,7 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const { musicValidations } = require("@helpers/BotUtils");
 
 /*/**
-*
+ *
  * @type {import("@structures/Command")}
  */
 module.exports = {
@@ -33,25 +33,21 @@ module.exports = {
  * @param {import("discord.js").CommandInteraction|import("discord.js").Message} arg0
  */
 async function skip({ client, guildId }) {
-  const player = client.musicManager.players.resolve(guildId);
-  const embed = new EmbedBuilder()
-    .setColor(client.config.EMBED_COLORS.BOT_EMBED);
+  const player = client.manager.getPlayer(guildId);
+  const embed = new EmbedBuilder().setColor(client.config.EMBED_COLORS.BOT_EMBED);
 
   // Check if there is a player and a song is currently playing
   if (!player || !player.queue.current) {
-    return embed
-      .setDescription("⏯️ There is no song currently being played.")
+    return embed.setDescription("⏯️ There is no song currently being played.");
   }
 
   const title = player.queue.current.info.title;
   // Check if there is a next song in the queue
   if (player.queue.tracks.length === 0) {
-    return embed
-      .setDescription("⏯️ There is no next song to skip to.");
+    return embed.setDescription("⏯️ There is no next song to skip to.");
   }
-    
+
   // Skip to the next song
-  player.queue.next();
-  return embed
-    .setDescription(`⏯️ ${title} was skipped.`);
+  await player.skip();
+  return embed.setDescription(`⏯️ ${title} was skipped.`);
 }

@@ -146,13 +146,9 @@ module.exports = class Utils {
     if (ms < minuteMs) {
       return `${ms / 1000}s`;
     } else if (ms < hourMs) {
-      return `${Math.floor(ms / minuteMs)}m ${Math.floor(
-        (ms % minuteMs) / 1000
-      )}s`;
+      return `${Math.floor(ms / minuteMs)}m ${Math.floor((ms % minuteMs) / 1000)}s`;
     } else if (ms < dayMs) {
-      return `${Math.floor(ms / hourMs)}h ${Math.floor(
-        (ms % hourMs) / minuteMs
-      )}m`;
+      return `${Math.floor(ms / hourMs)}h ${Math.floor((ms % hourMs) / minuteMs)}m`;
     } else {
       return `${Math.floor(ms / dayMs)}d ${Math.floor((ms % dayMs) / hourMs)}h`;
     }
@@ -163,6 +159,7 @@ module.exports = class Utils {
    * @param {string} string - The time string (e.g., "1d", "2h", "3m", "4s")
    * @returns {number} - The time in milliseconds
    */
+
   static parseTime(string) {
     const time = string.match(/([0-9]+[d,h,m,s])/g);
     if (!time) return 0;
@@ -184,13 +181,11 @@ module.exports = class Utils {
    * @param {string} status - The status to update
    * @param {object} client - The bot client
    */
-  static async vcUpdate(channel, status, client) {
-    const url = `/channels/${channel}/voice-status`;
+  static async vcUpdate(client, channelId, status) {
+    const url = `/channels/${channelId}/voice-status`;
     const payload = {
-      status: status
+      status: status,
     };
-    await client.rest.put(url, {
-      body: payload
-    }).catch(() => {});
+    await client.rest.put(url, { body: payload }).catch(() => {});
   }
 };

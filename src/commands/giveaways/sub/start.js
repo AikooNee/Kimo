@@ -14,11 +14,15 @@ module.exports = async (member, giveawayChannel, duration, prize, winners, host,
   try {
     if (!host) host = member.user;
     if (!member.permissions.has("ManageMessages")) {
-      return new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("Sorry, senpai! You need the 'Manage Messages' permission to start giveaways.");
+      return new EmbedBuilder()
+        .setColor(EMBED_COLORS.BOT_EMBED)
+        .setDescription("Sorry, senpai! You need the 'Manage Messages' permission to start giveaways.");
     }
 
     if (!giveawayChannel.type === ChannelType.GuildText) {
-      return new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription("UwU, you can only start giveaways in text channels, senpai!");
+      return new EmbedBuilder()
+        .setColor(EMBED_COLORS.BOT_EMBED)
+        .setDescription("UwU, you can only start giveaways in text channels, senpai!");
     }
 
     /**
@@ -45,9 +49,13 @@ module.exports = async (member, giveawayChannel, duration, prize, winners, host,
     }
 
     await member.client.giveawaysManager.start(giveawayChannel, options);
-    return new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(`Senpai, the giveaway has started in ${giveawayChannel}! Good luck! 🍀`);
+    return new EmbedBuilder()
+      .setColor(EMBED_COLORS.BOT_EMBED)
+      .setDescription(`Senpai, the giveaway has started in ${giveawayChannel}! Good luck! 🍀`);
   } catch (error) {
     member.client.logger.error("Anime Giveaway Start", error);
-    return new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(`Senpai, an error occurred while starting the  giveaway: ${error.message} 💔`);
+    return new EmbedBuilder()
+      .setColor(EMBED_COLORS.BOT_EMBED)
+      .setDescription(`Senpai, an error occurred while starting the  giveaway: ${error.message} 💔`);
   }
 };

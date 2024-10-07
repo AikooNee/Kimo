@@ -1,5 +1,4 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
-require("@lavaclient/plugin-queue/register")
 const { EMBED_COLORS, MUSIC } = require("@root/config");
 
 /**
@@ -48,130 +47,84 @@ module.exports = {
 async function play({ member, guild, channel }, query) {
   if (!member.voice.channel) return "🚫 You need to join a voice channel first";
 
-  let player = guild.client.musicManager.players.resolve(guild.id);
-  if (player && !guild.members.me.voice.channel) {
-    player.voice.disconnect();
-    await guild.client.musicManager.players.destroy(guild.id);
-  }
+  let player = guild.client.manager.getPlayer(guild.id);
 
   if (player && member.voice.channel !== guild.members.me.voice.channel) {
     return "🚫 You must be in the same voice channel as mine";
   }
 
-  let embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED);
-  let tracks;
-  let description = "";
-  let thumbnail;
-
-  try {
-    const res = await guild.client.musicManager.api.loadTracks(
-      /^https?:\/\//.test(query) ? query : `${MUSIC.DEFAULT_SOURCE}:${query}`
-    );
-
-    let track; // Declare track variable outside the switch statement
-
-    switch (res.loadType) {
-      case "error":
-        guild.client.logger.error("Search Exception", res.data);
-        return "🚫 There was an error while searching";
-
-      case "empty":
-        return `No results found matching ${query}`;
-
-      case "playlist":
-        tracks = res.data.tracks;
-        description = res.data.info.name;
-        thumbnail = res.data.pluginInfo.artworkUrl;
-        break;
-
-      case "track":
-        track = res.data;
-        tracks = [track];
-        break;
-
-      case "search":
-        track = res.data[0];
-        tracks = [track];
-        break;
-
-      default:
-        guild.client.logger.debug("Unknown loadType", res);
-        return "🚫 An error occurred while searching for the song";
-    }
-
-    if (!tracks) guild.client.logger.debug({ query, res });
-  } catch (error) {
-    guild.client.logger.error("Search Exception", typeof error === "object" ? JSON.stringify(error) : error);
-    return "🚫 An error occurred while searching for the song";
+  if (!player) {
+    player = await guild.client.manager.createPlayer({
+      guildId: guild.id,
+      voiceChannelId: member.voice.channel.id,
+      textChannelId: channel.id,
+      selfMute: false,
+      selfDeaf: true,
+      volume: MUSIC.DEFAULT_VOLUME,
+      vcRegion: member.voice.channel.rtcRegion,
+    });
   }
 
-  if (!tracks) return "🚫 An error occurred while searching for the song";
+  if (!player.connected) await player.connect();
 
-  if (tracks.length === 1) {
-    const track = tracks[0];
-    if (!player?.playing && !player?.paused && !player?.queue.tracks.length) {
-      embed.setAuthor({ name: "Added Track to queue" });
-    } else {
-      const fields = [];
-      embed
-        .setAuthor({ name: "Added Track to queue" })
-        .setDescription(`[${track.info.title}](${track.info.uri})`)
-        .setThumbnail(track.info.artworkUrl)
-        .setFooter({ text: `Requested By: ${member.user.username}` });
+  const res = await player.search({ query }, member.user);
 
-      fields.push({
-        name: "Song Duration",
-        value: "`" + guild.client.utils.formatTime(track.info.length) + "`",
-        inline: true,
-      });
+  if (!res || !res.tracks?.length) {
+    return {
+      embeds: [new EmbedBuilder().setColor(EMBED_COLORS.ERROR).setDescription("No results found!")],
+    };
+  }
 
-      if (player?.queue?.tracks?.length > 0) {
-        fields.push({
-          name: "Position in Queue",
-          value: (player.queue.tracks.length + 1).toString(),
-          inline: true,
-        });
-      }
-      embed.addFields(fields);
-    }
-  } else {
-    embed
+  if (res.loadType === "playlist") {
+    player.queue.add(res.tracks);
+
+    const embed = new EmbedBuilder()
       .setAuthor({ name: "Added Playlist to queue" })
-      .setThumbnail(thumbnail)
-      .setDescription(description)
+      .setThumbnail(res.playlist.thumbnail)
+      .setDescription(`[${res.playlist.name}](${res.playlist.uri})`)
       .addFields(
-        {
-          name: "Enqueued",
-          value: `${tracks.length} songs`,
-          inline: true,
-        },
+        { name: "Enqueued", value: `${res.tracks.length} songs`, inline: true },
         {
           name: "Playlist duration",
           value:
             "`" +
-            guild.client.utils.formatTime(
-              tracks.map((t) => t.info.length).reduce((a, b) => a + b, 0),
-            ) +
+            guild.client.utils.formatTime(res.tracks.map((t) => t.info.duration).reduce((a, b) => a + b, 0)) +
             "`",
           inline: true,
         }
       )
       .setFooter({ text: `Requested By: ${member.user.username}` });
+
+    if (!player.playing && player.queue.tracks.length > 0) {
+      await player.play({ paused: false });
+    }
+
+    return { embeds: [embed] };
   }
 
-  // create a player and/or join the member's vc
-  if (!player?.connected) {
-    player = guild.client.musicManager.players.create(guild.id);
-    player.queue.data.channel = channel;
-    player.voice.connect(member.voice.channel.id, { deafened: true });
-    player.setVolume(MUSIC.DEFAULT_VOLUME);
+  player.queue.add(res.tracks[0]);
+
+  const embed = new EmbedBuilder()
+    .setAuthor({ name: "Added Track to queue" })
+    .setDescription(`[${res.tracks[0].info.title}](${res.tracks[0].info.uri})`)
+    .setThumbnail(res.tracks[0].info.artworkUrl)
+    .addFields({
+      name: "Song Duration",
+      value: "`" + guild.client.utils.formatTime(res.tracks[0].info.duration) + "`",
+      inline: true,
+    })
+    .setFooter({ text: `Requested By: ${res.tracks[0].requester.username}` });
+
+  if (player.queue?.tracks?.length > 1) {
+    embed.addFields({
+      name: "Position in Queue",
+      value: player.queue.tracks.length.toString(),
+      inline: true,
+    });
   }
 
-  // do queue things
-  const started = player.playing || player.paused;
-  player.queue.add(tracks, { requester: member.user.displayName, next: false });
-  if (!started) {
-    await player.queue.start();
+  if (!player.playing && player.queue.tracks.length > 0) {
+    await player.play({ paused: false });
   }
 
   return { embeds: [embed] };

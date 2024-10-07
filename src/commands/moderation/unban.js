@@ -46,9 +46,7 @@ module.exports = {
     const reason = message.content.split(args[0])[1].trim();
 
     const response = await getMatchingBans(message.guild, match);
-    const embed = new EmbedBuilder()
-      .setColor(EMBED_COLORS.BOT_EMBED)
-      .setDescription(response);
+    const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(response);
     const sent = await message.safeReply({ embeds: [embed] });
     if (typeof response !== "string") await waitForBan(message.member, reason, sent);
   },
@@ -58,9 +56,7 @@ module.exports = {
     const reason = interaction.options.getString("reason");
 
     const response = await getMatchingBans(interaction.guild, match);
-    const embed = new EmbedBuilder()
-      .setColor(EMBED_COLORS.BOT_EMBED)
-      .setDescription(response);
+    const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(response);
     const sent = await interaction.followUp({ embeds: [embed] });
     if (typeof response !== "string") await waitForBan(interaction.member, reason, sent);
   },

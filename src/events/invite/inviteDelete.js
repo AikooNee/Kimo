@@ -25,10 +25,10 @@ module.exports = async (client, invite) => {
     .setColor("Red")
     .addFields({
       name: "Total uses",
-      value: invite.uses?.toString() || "Not Available"
+      value: invite.uses?.toString() || "Not Available",
     })
     .setTimestamp()
-    .setFooter({ text: `ID: ${invite.code} | Created by: ${invite.inviter?.username || "Not available"}` })
+    .setFooter({ text: `ID: ${invite.code} | Created by: ${invite.inviter?.username || "Not available"}` });
 
-  logChannel.send({ embeds: [embed] })
+  logChannel.send({ embeds: [embed] });
 };

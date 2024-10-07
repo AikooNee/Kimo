@@ -12,7 +12,7 @@ const { EMBED_COLORS, MUSIC } = require("@root/config");
  */
 module.exports = {
   name: "search",
-  description: "search for matching songs on youtube",
+  description: "search for matching songs on YouTube",
   category: "MUSIC",
   botPermissions: ["EmbedLinks"],
   command: {
@@ -48,171 +48,97 @@ module.exports = {
 };
 
 /**
- * @param {import("discord.js").CommandInteraction|import("discord.js").Message} arg0
+ * @param {import("discord.js").CommandInteraction|import("discord.js").Message} interaction
  * @param {string} query
  */
 async function search({ member, guild, channel }, query) {
   if (!member.voice.channel) return "🚫 You need to join a voice channel first";
 
-  let player = guild.client.musicManager.players.resolve(guild.id);
-  if (player && !guild.members.me.voice.channel) {
-    player.voice.disconnect();
-    await guild.client.musicManager.players.destroy(guild.id);
-  }
+  let player = guild.client.manager.getPlayer(guild.id);
+
   if (player && member.voice.channel !== guild.members.me.voice.channel) {
-    return "🚫 You must be in the same voice channel as mine";
+    return "🚫 You must be in the same voice channel as me.";
   }
 
-  let res;
+  if (!player) {
+    player = await guild.client.manager.createPlayer({
+      guildId: guild.id,
+      voiceChannelId: member.voice.channel.id,
+      textChannelId: channel.id,
+      selfMute: false,
+      selfDeaf: true,
+      volume: MUSIC.DEFAULT_VOLUME,
+      vcRegion: member.voice.channel.rtcRegion,
+    });
+  }
+
+  if (!player.connected) await player.connect();
+
+  const res = await player.search({ query }, member.user);
+
+  if (!res || !res.tracks?.length) {
+    return {
+      embeds: [new EmbedBuilder().setColor(EMBED_COLORS.ERROR).setDescription(`No results found for \`${query}\``)],
+    };
+  }
+
+  let maxResults = MUSIC.MAX_SEARCH_RESULTS;
+  if (res.tracks.length < maxResults) maxResults = res.tracks.length;
+
+  const results = res.tracks.slice(0, maxResults);
+  const options = results.map((track, index) => ({
+    label: track.info.title,
+    value: index.toString(),
+  }));
+
+  const menuRow = new ActionRowBuilder().addComponents(
+    new StringSelectMenuBuilder()
+      .setCustomId("search-results")
+      .setPlaceholder("Choose Search Results")
+      .setMaxValues(1)
+      .addOptions(options)
+  );
+
+  const searchEmbed = new EmbedBuilder()
+    .setColor(EMBED_COLORS.BOT_EMBED)
+    .setAuthor({ name: "Search Results" })
+    .setDescription(`Select the song you wish to add to the queue`);
+
+  const searchMessage = await channel.send({
+    embeds: [searchEmbed],
+    components: [menuRow],
+  });
+
   try {
-    res = await guild.client.musicManager.api.loadTracks(
-      /^https?:\/\//.test(query) ? query : `${MUSIC.DEFAULT_SOURCE}:${query}`
-    );
-  } catch (err) {
-    return "🚫 There was an error while searching";
-  }
+    const response = await channel.awaitMessageComponent({
+      filter: (i) => i.user.id === member.id && i.message.id === searchMessage.id,
+      componentType: ComponentType.StringSelect,
+      idle: 30 * 1000,
+    });
 
-  let embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED);
-  let tracks;
+    await searchMessage.delete();
 
-  switch (res.loadType) {
-    case "error":
-      guild.client.logger.error("Search Exception", res.data);
-      return "🚫 There was an error while searching";
+    const selectedTrack = results[response.values[0]];
+    player.queue.add(selectedTrack);
 
-    case "empty":
-      return `No results found matching ${query}`;
-
-    case "track": {
-      const track = res.data[0];
-      tracks = [track];
-      if (!player?.playing && !player?.paused && !player?.queue.tracks.length) {
-        embed.setAuthor({ name: "Added Song to queue" });
-        break;
-      }
-
-      const fields = [];
-      embed
-        .setAuthor({ name: "Added Song to queue" })
-        .setDescription(`[${track.info.title}](${track.info.uri})`)
-        .setFooter({ text: `Requested By: ${member.user.username}` });
-
-      fields.push({
+    const trackEmbed = new EmbedBuilder()
+      .setAuthor({ name: "Added Track to queue" })
+      .setDescription(`[${selectedTrack.info.title}](${selectedTrack.info.uri})`)
+      .setThumbnail(selectedTrack.info.artworkUrl)
+      .addFields({
         name: "Song Duration",
-        value: "`" + guild.client.utils.formatTime(track.info.length) + "`",
+        value: "`" + guild.client.utils.formatTime(selectedTrack.info.duration) + "`",
         inline: true,
-      });
+      })
+      .setFooter({ text: `Requested By: ${member.user.username}` });
 
-      if (player?.queue?.tracks?.length > 0) {
-        fields.push({
-          name: "Position in Queue",
-          value: (player.queue.tracks.length + 1).toString(),
-          inline: true,
-        });
-      }
-      embed.addFields(fields);
-      break;
+    if (!player.playing && player.queue.tracks.length > 0) {
+      await player.play({ paused: false });
     }
 
-    case "playlist":
-      tracks = res.data.tracks;
-      embed
-        .setAuthor({ name: "Added Playlist to queue" })
-        .setDescription(res.data.info.name)
-        .addFields(
-          {
-            name: "Enqueued",
-            value: `${res.data.tracks.length} songs`,
-            inline: true,
-          },
-          {
-            name: "Playlist duration",
-            value:
-              "`" +
-              guild.client.utils.formatTime(
-                res.data.tracks.map((t) => t.info.length).reduce((a, b) => a + b, 0),
-              ) +
-              "`",
-            inline: true,
-          }
-        )
-        .setFooter({ text: `Requested By: ${member.user.username}` });
-      break;
-
-    case "search": {
-      let max = guild.client.config.MUSIC.MAX_SEARCH_RESULTS;
-      if (res.data.length < max) max = res.data.length;
-
-      const results = res.data.slice(0, max);
-      const options = results.map((result, index) => ({
-        label: result.info.title,
-        value: index.toString(),
-      }));
-
-      const menuRow = new ActionRowBuilder().addComponents(
-        new StringSelectMenuBuilder()
-          .setCustomId("search-results")
-          .setPlaceholder("Choose Search Results")
-          .setMaxValues(max)
-          .addOptions(options)
-      );
-
-      const tempEmbed = new EmbedBuilder()
-        .setColor(EMBED_COLORS.BOT_EMBED)
-        .setAuthor({ name: "Search Results" })
-        .setDescription(`Please select the songs you wish to add to queue`);
-
-      const sentMsg = await channel.send({
-        embeds: [tempEmbed],
-        components: [menuRow],
-      });
-
-      try {
-        const response = await channel.awaitMessageComponent({
-          filter: (reactor) => reactor.message.id === sentMsg.id && reactor.user.id === member.id,
-          idle: 30 * 1000,
-          componentType: ComponentType.StringSelect,
-        });
-
-        await sentMsg.delete();
-        if (!response) return "🚫 You took too long to select the songs";
-
-        if (response.customId !== "search-results") return;
-        const toAdd = [];
-        response.values.forEach((v) => toAdd.push(results[v]));
-
-        // Only 1 song is selected
-        if (toAdd.length === 1) {
-          tracks = [toAdd[0]];
-          embed.setAuthor({ name: "Added Song to queue" });
-        } else {
-          tracks = toAdd;
-          embed
-            .setDescription(`🎶 Added ${toAdd.length} songs to queue`)
-            .setFooter({ text: `Requested By: ${member.user.username}` });
-        }
-      } catch (err) {
-        console.log(err);
-        await sentMsg.delete();
-        return "🚫 Failed to register your response";
-      }
-      break;
-    }
+    return { embeds: [trackEmbed] };
+  } catch (err) {
+    await searchMessage.delete();
+    return "🚫 You took too long to select the song";
   }
-
-  // create a player and/or join the member's vc
-  if (!player?.connected) {
-    player = guild.client.musicManager.players.create(guild.id);
-    player.queue.data.channel = channel;
-    player.voice.connect(member.voice.channel.id, { deafened: true });
-  }
-
-  // do queue things
-  const started = player.playing || player.paused;
-  player.queue.add(tracks, { requester: member.user.username, next: false });
-  if (!started) {
-    await player.queue.start();
-  }
-
-  return { embeds: [embed] };
 }

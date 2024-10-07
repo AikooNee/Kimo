@@ -39,7 +39,7 @@ module.exports = async (client, member) => {
       .setTitle(`${member.displayName} (\`${member.id}\` was kicked.)`)
       .setDescription(`Reason: ${possibleLog.reason || "none"}`)
       .setTimestamp()
-      .setFooter({ text: `ID: ${member.id} | Executor: ${possibleLog.executor.username}` })
-    await logChannel.send({ embeds: [embed] })
+      .setFooter({ text: `ID: ${member.id} | Executor: ${possibleLog.executor.username}` });
+    await logChannel.send({ embeds: [embed] });
   }
 };

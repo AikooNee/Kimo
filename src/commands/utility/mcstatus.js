@@ -50,7 +50,9 @@ async function mcstatus(context, serverIP) {
         .setColor(EMBED_COLORS.ERROR);
       return { embeds: [invalidIPEmbed] };
     } else {
-      const thumbnail = serverData.icon ? `data:image/png;base64,${serverData.icon.replace("data:image/png;base64,", "")}` : "";
+      const thumbnail = serverData.icon
+        ? `data:image/png;base64,${serverData.icon.replace("data:image/png;base64,", "")}`
+        : "";
 
       const embed = new EmbedBuilder()
         .setTitle(serverData.hostname)
@@ -61,7 +63,7 @@ async function mcstatus(context, serverIP) {
           { name: "Players", value: `${serverData.players.online}/${serverData.players.max}`, inline: true },
           { name: "Version", value: serverData.version, inline: true },
           { name: "Online", value: serverData.online ? "Yes" : "No", inline: true },
-          { name: "Description", value: serverData.motd.clean.join('\n') || "No description", inline: false },
+          { name: "Description", value: serverData.motd.clean.join("\n") || "No description", inline: false },
           { name: "Cracked", value: serverData.players.sample ? "Yes" : "No", inline: true }
         );
       return { embeds: [embed] };

@@ -47,9 +47,7 @@ module.exports = {
     const outputCode = args.shift();
 
     if (!GOOGLE_TRANSLATE[outputCode]) {
-      embed
-        .setColor(EMBED_COLORS.WARNING)
-        .setDescription("Invalid translation code.");
+      embed.setColor(EMBED_COLORS.WARNING).setDescription("Invalid translation code.");
       return message.safeReply({ embeds: [embed] });
     }
 

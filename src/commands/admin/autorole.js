@@ -93,11 +93,11 @@ module.exports = {
     let response;
 
     if (action === "add") {
-      const roles = message.mentions.roles.map(r => r) || message.guild.findMatchingRoles(input).slice(0, 4);
+      const roles = message.mentions.roles.map((r) => r) || message.guild.findMatchingRoles(input).slice(0, 4);
       if (roles.length === 0) response = "No matching roles found matching your query";
       else response = await addAutoRoles(message, roles, data.settings);
     } else if (action === "remove") {
-      const roles = message.mentions.roles.map(r => r) || message.guild.findMatchingRoles(input).slice(0, 4);
+      const roles = message.mentions.roles.map((r) => r) || message.guild.findMatchingRoles(input).slice(0, 4);
       if (roles.length === 0) response = "No matching roles found matching your query";
       else response = await removeAutoRoles(message, roles, data.settings);
     } else if (action === "list") {
@@ -120,7 +120,7 @@ module.exports = {
         interaction.options.getRole("role3"),
         interaction.options.getRole("role4"),
       ].filter(Boolean);
-      
+
       response = await addAutoRoles(interaction, roles, data.settings);
     } else if (sub === "remove") {
       const roles = [
@@ -162,7 +162,7 @@ async function addAutoRoles({ guild }, roles, settings) {
   if (settings.autoroles.length > 4) return `You can only have up to 4 autoroles`;
 
   await settings.save();
-  return `Roles have been added to the autorole list: ${roles.map(role => role.name).join(", ")}`;
+  return `Roles have been added to the autorole list: ${roles.map((role) => role.name).join(", ")}`;
 }
 
 /**
@@ -176,11 +176,11 @@ async function removeAutoRoles({ guild }, roles, settings) {
   for (const role of roles) {
     if (!settings.autoroles.includes(role.id)) return `The role ${role.name} is not in the autorole list`;
 
-    settings.autoroles = settings.autoroles.filter(r => r !== role.id);
+    settings.autoroles = settings.autoroles.filter((r) => r !== role.id);
   }
 
   await settings.save();
-  return `Roles have been removed from the autorole list: ${roles.map(role => role.name).join(", ")}`;
+  return `Roles have been removed from the autorole list: ${roles.map((role) => role.name).join(", ")}`;
 }
 
 /**
@@ -189,5 +189,5 @@ async function removeAutoRoles({ guild }, roles, settings) {
 function listAutoRoles(settings) {
   if (!settings.autoroles || settings.autoroles.length === 0) return "No autoroles are set up";
 
-  return `Current autoroles: ${settings.autoroles.map(id => `<@&${id}>`).join(", ")}`;
+  return `Current autoroles: ${settings.autoroles.map((id) => `<@&${id}>`).join(", ")}`;
 }

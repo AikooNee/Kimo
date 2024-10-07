@@ -12,12 +12,12 @@ module.exports = {
     image: "https://cdn.discordapp.com/emojis/1215966646976647168.png",
     emoji: "<:a_automod:1215966646976647168>",
   },
-   ANIME: {
+  ANIME: {
     name: "Anime",
     image: "https://wallpaperaccess.com/full/5680679.jpg",
     emoji: "🎨",
   },
-    FUN: {
+  FUN: {
     name: "Fun",
     image: "https://cdn.discordapp.com/emojis/1215966551371550770.png",
     emoji: "<:a_fun:1215966551371550770>",

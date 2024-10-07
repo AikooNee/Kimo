@@ -43,7 +43,7 @@ module.exports = {
  * @param {import("discord.js").CommandInteraction|import("discord.js").Message} arg0
  */
 async function getVolume({ client, guildId }, amount) {
-  const player = client.musicManager.players.resolve(guildId);
+  const player = client.manager.getPlayer(guildId);
 
   if (!amount) return `> The player volume is \`${player.volume}\`.`;
 

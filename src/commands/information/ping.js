@@ -30,11 +30,13 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(EMBED_COLORS.BOT_EMBED)
       .setAuthor({
-        name: 'Latency Check',
+        name: "Latency Check",
         iconURL: message.client.user.avatarURL({ dynamic: true, size: 2048 }),
       })
-      .setDescription(`:heart: Heartbeat: **${message.client.ws.ping}** ms\n:heartpulse: Message: **${latency}** ms\n:sparkles: *Nyan Nyan Nyan!*`);
-    
+      .setDescription(
+        `:heart: Heartbeat: **${message.client.ws.ping}** ms\n:heartpulse: Message: **${latency}** ms\n:sparkles: *Nyan Nyan Nyan!*`
+      );
+
     msg.edit({ content: null, embeds: [embed] });
   },
 
@@ -45,11 +47,13 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(EMBED_COLORS.BOT_EMBED)
       .setAuthor({
-        name: 'Latency Check',
+        name: "Latency Check",
         iconURL: interaction.client.user.avatarURL({ dynamic: true, size: 2048 }),
       })
-      .setDescription(`:heart: Heartbeat: **${interaction.client.ws.ping}** ms\n:heartpulse: Message: **${latency}** ms\n:sparkles: *Nyan Nyan Nyan!*`);
-    
+      .setDescription(
+        `:heart: Heartbeat: **${interaction.client.ws.ping}** ms\n:heartpulse: Message: **${latency}** ms\n:sparkles: *Nyan Nyan Nyan!*`
+      );
+
     interaction.editReply({ content: null, embeds: [embed] });
   },
 };
