@@ -120,10 +120,9 @@ const Schema = new mongoose.Schema({
     },
   ],
   snipe: {
+    userId: String,
     channel: String,
-    username: String,
     content: String,
-    userAvatar: String,
     deletedAt: Date,
   },
 });

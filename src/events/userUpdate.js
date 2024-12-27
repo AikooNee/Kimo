@@ -25,7 +25,7 @@ module.exports = async (client, oldUser, newUser) => {
     .setFooter({ text: `ID: ${newUser.id}` });
   // Avatar
   if (oldUser.avatar !== newUser.avatar) {
-    embed.setTitle(`${newUser} (${newUser.username}) updated their avatar!`).setImage(newUser.displayAvatarURL());
+    embed.setTitle(`${newUser} (${newUser.username}) updated their avatar!`).setImage(oldUser.displayAvatarURL());
   }
 
   // User

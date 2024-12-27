@@ -36,7 +36,7 @@ module.exports = {
   },
 };
 
-function mcskin(context, playerName) {
+function mcskin(_context, playerName) {
   const username = playerName.split(" ")[0];
   const embed = new EmbedBuilder()
     .setColor(EMBED_COLORS.BOT_EMBED)
