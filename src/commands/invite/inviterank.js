@@ -8,21 +8,6 @@ module.exports = {
   description: "configure invite ranks",
   category: "INVITE",
   userPermissions: ["ManageGuild"],
-  command: {
-    enabled: true,
-    usage: "<role-name> <invites>",
-    minArgsCount: 2,
-    subcommands: [
-      {
-        trigger: "add <role> <invites>",
-        description: "add auto-rank after reaching a particular number of invites",
-      },
-      {
-        trigger: "remove role",
-        description: "remove invite rank configured with that role",
-      },
-    ],
-  },
   slashCommand: {
     enabled: true,
     ephemeral: true,
@@ -60,36 +45,6 @@ module.exports = {
         ],
       },
     ],
-  },
-
-  async messageRun(message, args, data) {
-    const sub = args[0].toLowerCase();
-
-    if (sub === "add") {
-      const query = args[1];
-      const invites = args[2];
-
-      if (isNaN(invites)) return message.safeReply(`\`${invites}\` is not a valid number of invites?`);
-      const role = message.guild.findMatchingRoles(query)[0];
-      if (!role) return message.safeReply(`No roles found matching \`${query}\``);
-
-      const response = await addInviteRank(message, role, invites, data.settings);
-      await message.safeReply(response);
-    }
-
-    //
-    else if (sub === "remove") {
-      const query = args[1];
-      const role = message.guild.findMatchingRoles(query)[0];
-      if (!role) return message.safeReply(`No roles found matching \`${query}\``);
-      const response = await removeInviteRank(message, role, data.settings);
-      await message.safeReply(response);
-    }
-
-    //
-    else {
-      await message.safeReply("Incorrect command usage!");
-    }
   },
 
   async interactionRun(interaction, data) {

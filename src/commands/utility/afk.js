@@ -9,11 +9,6 @@ module.exports = {
   description: "Set your afk status with an optional message",
   category: "UTILITY",
   botPermissions: ["EmbedLinks"],
-  command: {
-    enabled: true,
-    usage: "[reason]",
-    minArgsCount: 0,
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -24,12 +19,6 @@ module.exports = {
         required: false,
       },
     ],
-  },
-
-  async messageRun(message, args, data) {
-    const reason = args.join(" ");
-    const response = await afkSet(message.author, reason, data);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction, data) {

@@ -23,10 +23,6 @@ module.exports = {
   description: "command help menu",
   category: "UTILITY",
   botPermissions: ["EmbedLinks"],
-  command: {
-    enabled: true,
-    usage: "[command]",
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -37,24 +33,6 @@ module.exports = {
         type: ApplicationCommandOptionType.String,
       },
     ],
-  },
-
-  async messageRun(message, args, data) {
-    let trigger = args[0];
-
-    if (!trigger) {
-      const response = await getHelpMenu(message);
-      const sentMsg = await message.safeReply(response);
-      return waiter(sentMsg, message.author.id, data.prefix);
-    }
-
-    const cmd = message.client.getCommand(trigger);
-    if (cmd) {
-      const embed = getCommandUsage(cmd, data.prefix, trigger);
-      return message.safeReply({ embeds: [embed] });
-    }
-
-    await message.safeReply("No matching command found");
   },
 
   async interactionRun(interaction) {

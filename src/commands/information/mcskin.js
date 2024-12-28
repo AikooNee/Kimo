@@ -7,11 +7,6 @@ module.exports = {
   category: "INFORMATION",
   botPermissions: ["EmbedLinks"],
   cooldown: 5,
-  command: {
-    enabled: true,
-    usage: "<skin-name>",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -22,11 +17,6 @@ module.exports = {
         required: true,
       },
     ],
-  },
-
-  async messageRun(message, args) {
-    const response = mcskin(message, args[0]);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction) {

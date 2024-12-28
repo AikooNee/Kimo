@@ -8,13 +8,6 @@ module.exports = {
   cooldown: 10,
   category: "FUN",
   botPermissions: ["EmbedLinks"],
-  userPermissions: [],
-  command: {
-    enabled: true,
-    aliases: [],
-    usage: "<movie name>",
-    minArgsCount: 0,
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -26,19 +19,7 @@ module.exports = {
       },
     ],
   },
-
-  async messageRun(message, args) {
-    const choice = args.join(" ");
-    if (!choice) {
-      const embed = new EmbedBuilder()
-        .setColor(EMBED_COLORS.ERROR)
-        .setDescription("Please provide the name of the movie.");
-      return message.safeReply({ embeds: [embed] });
-    }
-    const response = await getMovie(message, choice);
-    return message.safeReply(response);
-  },
-
+  
   async interactionRun(interaction) {
     const choice = interaction.options.getString("name");
     const response = await getMovie(interaction, choice);

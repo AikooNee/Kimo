@@ -11,11 +11,6 @@ module.exports = {
   category: "MODERATION",
   botPermissions: ["BanMembers"],
   userPermissions: ["BanMembers"],
-  command: {
-    enabled: true,
-    usage: "<ID|@member> [reason]",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -32,21 +27,6 @@ module.exports = {
         required: false,
       },
     ],
-  },
-
-  async messageRun(message, args) {
-    const match = await message.client.resolveUsers(args[0], true);
-    const target = match[0];
-    if (!target) {
-      const embed = new EmbedBuilder()
-        .setColor(EMBED_COLORS.BOT_EMBED)
-        .setDescription(`No user found matching ${args[0]}`);
-      return message.safeReply({ embeds: [embed] });
-    }
-    const reason = message.content.split(args[0])[1].trim();
-    const response = await ban(message.member, target, reason);
-    const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(response);
-    await message.safeReply({ embeds: [embed] });
   },
 
   async interactionRun(interaction) {

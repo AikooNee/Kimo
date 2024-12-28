@@ -6,11 +6,6 @@ module.exports = {
   description: "Lock or unlock channels",
   category: "MODERATION",
   userPermissions: ["ManageChannels"],
-  command: {
-    enabled: true,
-    usage: "<lock|unlock> [channel]",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     ephemeral: true,
@@ -44,33 +39,6 @@ module.exports = {
         ],
       },
     ],
-  },
-
-  async messageRun(message, args) {
-    const subcommand = args[0]?.toLowerCase();
-
-    if (subcommand === "lock" || subcommand === "unlock") {
-      const targetChannel = message.mentions.channels.first() || message.channel;
-      const action = subcommand === "lock" ? lockChannel : unlockChannel;
-
-      if (await getChannel(targetChannel, subcommand === "lock")) {
-        const responseEmbed = new EmbedBuilder()
-          .setDescription(`Channel <#${targetChannel.id}> is already ${subcommand === "lock" ? "locked" : "unlocked"}.`)
-          .setColor(EMBED_COLORS.BOT_EMBED);
-        message.safeReply({ embeds: [responseEmbed] });
-      } else {
-        await action(targetChannel);
-        const responseEmbed = new EmbedBuilder()
-          .setDescription(`Channel <#${targetChannel.id}> has been ${subcommand === "lock" ? "locked" : "unlocked"}.`)
-          .setColor(EMBED_COLORS.BOT_EMBED);
-        message.safeReply({ embeds: [responseEmbed] });
-      }
-    } else {
-      const errorEmbed = new EmbedBuilder()
-        .setDescription("Invalid subcommand. Please use `lock` or `unlock`.")
-        .setColor(EMBED_COLORS.BOT_ERROR);
-      message.safeReply({ embeds: [errorEmbed] });
-    }
   },
 
   async interactionRun(interaction) {

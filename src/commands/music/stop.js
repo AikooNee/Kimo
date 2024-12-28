@@ -8,19 +8,10 @@ module.exports = {
   description: "stop the music player",
   category: "MUSIC",
   validations: musicValidations,
-  command: {
-    enabled: true,
-    aliases: ["leave"],
-  },
   slashCommand: {
     enabled: true,
   },
-
-  async messageRun(message, args, data) {
-    const response = await stop(message, data.settings);
-    await message.safeReply(response);
-  },
-
+  
   async interactionRun(interaction, data) {
     const response = await stop(interaction, data.settings);
     await interaction.followUp(response);

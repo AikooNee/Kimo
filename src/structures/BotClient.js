@@ -139,24 +139,6 @@ module.exports = class BotClient extends Client {
       this.logger.debug(`Skipping Command ${cmd.name}. Category ${cmd.category} is disabled`);
       return;
     }
-    // Prefix Command
-    if (cmd.command?.enabled) {
-      const index = this.commands.length;
-      if (this.commandIndex.has(cmd.name)) {
-        throw new Error(`Command ${cmd.name} already registered`);
-      }
-      if (Array.isArray(cmd.command.aliases)) {
-        cmd.command.aliases.forEach((alias) => {
-          if (this.commandIndex.has(alias)) throw new Error(`Alias ${alias} already registered`);
-          this.commandIndex.set(alias.toLowerCase(), index);
-        });
-      }
-      this.commandIndex.set(cmd.name.toLowerCase(), index);
-      this.commands.push(cmd);
-    } else {
-      this.logger.debug(`Skipping command ${cmd.name}. Disabled!`);
-    }
-
     // Slash Command
     if (cmd.slashCommand?.enabled) {
       if (this.slashCommands.has(cmd.name)) throw new Error(`Slash Command ${cmd.name} already registered`);
@@ -184,8 +166,7 @@ module.exports = class BotClient extends Client {
         this.logger.error(`Failed to load ${file} Reason: ${ex.message}`);
       }
     }
-
-    this.logger.success(`Loaded ${this.commands.length} commands`);
+     
     this.logger.success(`Loaded ${this.slashCommands.size} slash commands`);
     if (this.slashCommands.size > 100) throw new Error("A maximum of 100 slash commands can be enabled");
   }

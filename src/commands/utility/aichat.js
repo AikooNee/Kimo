@@ -37,11 +37,6 @@ module.exports = {
   description: "Setup Ai chatbot in your server",
   category: "UTILITY",
   userPermissions: ["ManageGuild"],
-  command: {
-    enabled: true,
-    usage: "<set | delete> <language>",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     ephemeral: true,
@@ -87,14 +82,6 @@ module.exports = {
         ],
       },
     ],
-  },
-
-  async messageRun(message, args) {
-    const embed = new EmbedBuilder()
-      .setColor(EMBED_COLORS.ERROR)
-      .setDescription("This command is only available as a slash command </chatbot language:1231487088768192596>");
-
-    await message.safeReply({ embeds: [embed] });
   },
 
   async interactionRun(interaction, data) {

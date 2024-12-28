@@ -11,6 +11,5 @@ module.exports = {
   afkHandler: require("./afk"),
   chatbotHandler: require("./chatbot"),
   managerHandler: require("./manager"),
-  buttonHandler: require("./button"),
   giveawayHandler: require("./giveaway"),
 };

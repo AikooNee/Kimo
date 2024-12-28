@@ -11,12 +11,6 @@ module.exports = {
   category: "MODERATION",
   botPermissions: ["ModerateMembers"],
   userPermissions: ["ModerateMembers"],
-  command: {
-    enabled: true,
-    aliases: ["unmute"],
-    usage: "<ID|@member> [reason]",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -33,20 +27,6 @@ module.exports = {
         required: false,
       },
     ],
-  },
-
-  async messageRun(message, args) {
-    const target = await message.guild.resolveMember(args[0], true);
-    if (!target) {
-      const embed = new EmbedBuilder()
-        .setColor(EMBED_COLORS.BOT_EMBED)
-        .setDescription(`No user found matching ${args[0]}`);
-      return message.safeReply({ embeds: [embed] });
-    }
-    const reason = args.slice(1).join(" ").trim();
-    const response = await untimeout(message.member, target, reason);
-    const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(response);
-    await message.safeReply({ embeds: [embed] });
   },
 
   async interactionRun(interaction) {

@@ -1,5 +1,4 @@
 const { AttachmentBuilder, ApplicationCommandOptionType } = require("discord.js");
-const { EMBED_COLORS, IMAGE } = require("@root/config");
 const { getMemberStats, getXpLb } = require("@schemas/MemberStats");
 const { RankCard } = require("rankcard");
 
@@ -12,10 +11,6 @@ module.exports = {
   cooldown: 5,
   category: "STATS",
   botPermissions: ["AttachFiles"],
-  command: {
-    enabled: true,
-    usage: "[@member|id]",
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -26,12 +21,6 @@ module.exports = {
         required: false,
       },
     ],
-  },
-
-  async messageRun(message, args, data) {
-    const member = (await message.guild.resolveMember(args[0])) || message.member;
-    const response = await this.getRank(message, member, data.settings);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction, data) {

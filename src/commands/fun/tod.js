@@ -10,19 +10,9 @@ module.exports = {
   description: "Get a random truth or dare question",
   category: "FUN",
   botPermissions: ["SendMessages"],
-  cooldown: 3,
-  premium: false,
-  command: {
-    enabled: true,
-  },
   slashCommand: {
     enabled: true,
     options: [],
-  },
-
-  async messageRun(message) {
-    const response = await getTod(message.author);
-    return message.safeReply(response);
   },
 
   async interactionRun(interaction) {

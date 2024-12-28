@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { EMBED_COLORS } = require("@root/config.js");
 
 module.exports = {
@@ -7,15 +7,12 @@ module.exports = {
   cooldown: 3,
   category: "FUN",
   botPermissions: ["SendMessages"],
-  command: {
+  slashCommand: {
     enabled: true,
-    usage: "<roll_amount>",
+    ephemeral: false,
+    options: [],
   },
-  async messageRun(message, args) {
-    const rollAmount = args[0] || 100;
-    const response = await rollDice(rollAmount, message.author);
-    await message.safeReply(response);
-  },
+  
   async interactionRun(interaction) {
     const rollAmount = interaction.options.getInteger("roll_amount") || 100;
     const response = await rollDice(rollAmount, interaction.user);

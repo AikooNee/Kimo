@@ -15,9 +15,6 @@ module.exports = {
   category: "MODERATION",
   userPermissions: ["MuteMembers", "MoveMembers", "DeafenMembers"],
   botPermissions: ["MuteMembers", "MoveMembers", "DeafenMembers"],
-  command: {
-    enabled: false,
-  },
   slashCommand: {
     enabled: true,
     options: [

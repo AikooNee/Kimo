@@ -8,11 +8,6 @@ module.exports = {
   description: "setup roles to be given when a member joins the server",
   category: "ADMIN",
   userPermissions: ["ManageGuild"],
-  command: {
-    enabled: true,
-    usage: "<add|remove|list> <role|role_id>",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     ephemeral: true,
@@ -85,28 +80,6 @@ module.exports = {
         type: ApplicationCommandOptionType.Subcommand,
       },
     ],
-  },
-
-  async messageRun(message, args, data) {
-    const action = args[0].toLowerCase();
-    const input = args.slice(1).join(" ");
-    let response;
-
-    if (action === "add") {
-      const roles = message.mentions.roles.map((r) => r) || message.guild.findMatchingRoles(input).slice(0, 4);
-      if (roles.length === 0) response = "No matching roles found matching your query";
-      else response = await addAutoRoles(message, roles, data.settings);
-    } else if (action === "remove") {
-      const roles = message.mentions.roles.map((r) => r) || message.guild.findMatchingRoles(input).slice(0, 4);
-      if (roles.length === 0) response = "No matching roles found matching your query";
-      else response = await removeAutoRoles(message, roles, data.settings);
-    } else if (action === "list") {
-      response = listAutoRoles(data.settings);
-    } else {
-      response = "Invalid action";
-    }
-
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction, data) {

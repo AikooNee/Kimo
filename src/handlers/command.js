@@ -7,91 +7,6 @@ const cooldownCache = new Map();
 
 module.exports = {
   /**
-   * @param {import('discord.js').Message} message
-   * @param {import("@structures/Command")} cmd
-   * @param {object} settings
-   */
-  handlePrefixCommand: async function (message, cmd, settings) {
-    const prefix = settings.prefix;
-    const args = message.content.replace(prefix, "").split(/\s+/);
-    const invoke = args.shift().toLowerCase();
-
-    const data = {};
-    data.settings = settings;
-    data.prefix = prefix;
-    data.invoke = invoke;
-
-    if (!message.channel.permissionsFor(message.guild.members.me).has("SendMessages")) return;
-
-    // callback validations
-    if (cmd.validations) {
-      for (const validation of cmd.validations) {
-        if (!validation.callback(message)) {
-          const embed = new EmbedBuilder().setColor(EMBED_COLORS.ERROR).setDescription(validation.message);
-          return message.safeReply({ embeds: [embed] });
-        }
-      }
-    }
-
-    // Owner commands
-    if (cmd.category === "OWNER" && !OWNER_IDS.includes(message.author.id)) {
-      const embed = new EmbedBuilder()
-        .setColor(EMBED_COLORS.ERROR)
-        .setDescription("This command is only accessible to bot owners");
-      return message.safeReply({ embeds: [embed] });
-    }
-
-    // check user permissions
-    if (cmd.userPermissions && cmd.userPermissions?.length > 0) {
-      if (!message.channel.permissionsFor(message.member).has(cmd.userPermissions)) {
-        const embed = new EmbedBuilder()
-          .setColor(EMBED_COLORS.ERROR)
-          .setDescription(`You need ${parsePermissions(cmd.userPermissions)} for this command`);
-        return message.safeReply({ embeds: [embed] });
-      }
-    }
-
-    // check bot permissions
-    if (cmd.botPermissions && cmd.botPermissions.length > 0) {
-      if (!message.channel.permissionsFor(message.guild.members.me).has(cmd.botPermissions)) {
-        const embed = new EmbedBuilder()
-          .setColor(EMBED_COLORS.ERROR)
-          .setDescription(`I need ${parsePermissions(cmd.botPermissions)} for this command`);
-        return message.safeReply({ embeds: [embed] });
-      }
-    }
-
-    // minArgs count
-    if (cmd.command.minArgsCount > args.length) {
-      const usageEmbed = this.getCommandUsage(cmd, prefix, invoke);
-      return message.safeReply({ embeds: [usageEmbed] });
-    }
-
-    // cooldown check
-    if (cmd.cooldown > 0 && !OWNER_IDS.includes(message.author.id)) {
-      const remaining = getRemainingCooldown(message.author.id, cmd);
-      if (remaining > 0) {
-        const embed = new EmbedBuilder()
-          .setColor(EMBED_COLORS.ERROR)
-          .setDescription(`You are on cooldown. You can again use the command in \`${timeformat(remaining)}\``);
-        return message.safeReply({ embeds: [embed] });
-      }
-    }
-
-    try {
-      await cmd.messageRun(message, args, data);
-    } catch (ex) {
-      message.client.logger.error("messageRun", ex);
-      const embed = new EmbedBuilder()
-        .setColor(EMBED_COLORS.ERROR)
-        .setDescription("An error occurred while running this command");
-      message.safeReply({ embeds: [embed] });
-    } finally {
-      if (cmd.cooldown > 0 && !OWNER_IDS.includes(message.author.id)) applyCooldown(message.author.id, cmd);
-    }
-  },
-
-  /**
    * @param {import('discord.js').ChatInputCommandInteraction} interaction
    */
   handleSlashCommand: async function (interaction) {
@@ -160,33 +75,6 @@ module.exports = {
     } finally {
       if (cmd.cooldown > 0 && !OWNER_IDS.includes(interaction.user.id)) applyCooldown(interaction.user.id, cmd);
     }
-  },
-
-  /**
-   * Build a usage embed for this command
-   * @param {import('@structures/Command')} cmd - command object
-   * @param {string} prefix - guild bot prefix
-   * @param {string} invoke - alias that was used to trigger this command
-   * @param {string} [title] - the embed title
-   */
-  getCommandUsage(cmd, prefix = PREFIX_COMMANDS.DEFAULT_PREFIX, invoke, title = "Usage") {
-    let desc = "";
-    if (cmd.command.subcommands && cmd.command.subcommands.length > 0) {
-      cmd.command.subcommands.forEach((sub) => {
-        desc += `\`${prefix}${invoke || cmd.name} ${sub.trigger}\`\n❯ ${sub.description}\n\n`;
-      });
-      if (cmd.cooldown) {
-        desc += `**Cooldown:** ${timeformat(cmd.cooldown)}`;
-      }
-    } else {
-      desc += `\`\`\`css\n${prefix}${invoke || cmd.name} ${cmd.command.usage}\`\`\``;
-      if (cmd.description !== "") desc += `\n**Help:** ${cmd.description}`;
-      if (cmd.cooldown) desc += `\n**Cooldown:** ${timeformat(cmd.cooldown)}`;
-    }
-
-    const embed = new EmbedBuilder().setColor(EMBED_COLORS.BOT_EMBED).setDescription(desc);
-    if (title) embed.setAuthor({ name: title });
-    return embed;
   },
 
   /**

@@ -11,19 +11,9 @@ module.exports = {
   description: "Toggle autoplay feature for music player",
   category: "MUSIC",
   validations: musicValidations,
-  command: {
-    enabled: true,
-    aliases: ["ap"],
-    usage: "",
-  },
   slashCommand: {
     enabled: true,
     options: [],
-  },
-
-  async messageRun(message, args) {
-    const response = await toggleAutoplay(message);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction) {

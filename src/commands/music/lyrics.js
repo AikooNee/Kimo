@@ -9,12 +9,6 @@ module.exports = {
   category: "MUSIC",
   botPermissions: ["EmbedLinks"],
   userPermissions: [],
-  command: {
-    enabled: true,
-    aliases: ["ly"],
-    usage: "[song name]",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -27,22 +21,16 @@ module.exports = {
     ],
   },
 
-  async messageRun(message, args) {
-    const choice = args.join(" ");
-    const response = await getLyric(message.author, choice);
-    return message.safeReply(response);
-  },
-
   async interactionRun(interaction) {
     const choice = interaction.options.getString("query");
-    const response = await getLyric(interaction.user, choice);
+    const response = await getLyric(choice);
     await interaction.followUp(response);
   },
 };
 
-async function getLyric(user, choice) {
+async function getLyric(choice) {
   const genius = new GeniusClient({ accessToken: process.env.GENIUS_API });
-  const track = await genius.getSong({ title: choice, authHeader: true, optimizeQuery: true });
+  const track = await genius.getSong({ title: choice, authHeader: true, optimizeQuery: true }).catch(() => null);
 
   if (!track) {
     const embed = new EmbedBuilder()

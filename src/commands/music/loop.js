@@ -9,12 +9,6 @@ module.exports = {
   description: "loops the song or queue",
   category: "MUSIC",
   validations: musicValidations,
-  command: {
-    enabled: true,
-    aliases: ["lp"],
-    minArgsCount: 1,
-    usage: "<queue|track|off>",
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -39,13 +33,6 @@ module.exports = {
         ],
       },
     ],
-  },
-
-  async messageRun(message, args) {
-    const input = args[0].toLowerCase();
-    const type = input === "queue" ? "queue" : input === "track" ? "track" : "off";
-    const response = toggleLoop(message, type);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction) {

@@ -9,20 +9,9 @@ module.exports = {
   category: "MUSIC",
   userPermissions: ["ManageGuild"],
   botPermissions: ["EmbedLinks"],
-  command: {
-    enabled: true,
-    aliases: ["stay"],
-    minArgsCount: 0,
-    usage: "",
-  },
   slashCommand: {
     enabled: true,
     options: [],
-  },
-
-  async messageRun(message, args, data) {
-    const response = await toggle247(message, data.settings);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction, data) {

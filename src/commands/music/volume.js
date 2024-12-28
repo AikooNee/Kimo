@@ -9,11 +9,6 @@ module.exports = {
   description: "Set the music player volume",
   category: "MUSIC",
   validations: musicValidations,
-  command: {
-    enabled: true,
-    aliases: ["vol"],
-    usage: "<0-100>",
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -25,13 +20,7 @@ module.exports = {
       },
     ],
   },
-
-  async messageRun(message, args) {
-    const amount = parseInt(args[0]);
-    const response = await getVolume(message, amount);
-    await message.safeReply(response);
-  },
-
+  
   async interactionRun(interaction) {
     const amount = parseInt(interaction.options.getInteger("amount"));
     const response = await getVolume(interaction, amount);

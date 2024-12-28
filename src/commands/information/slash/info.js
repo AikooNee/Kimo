@@ -12,9 +12,6 @@ module.exports = {
   description: "show various information",
   category: "INFORMATION",
   botPermissions: ["EmbedLinks"],
-  command: {
-    enabled: false,
-  },
   slashCommand: {
     enabled: true,
     options: [

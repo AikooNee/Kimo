@@ -16,6 +16,7 @@ module.exports = {
     usage: "[reload]",
     minArgsCount: 1,
   },
+  
   async messageRun(message, args) {
     const option = args[0];
     const reloading = new EmbedBuilder()

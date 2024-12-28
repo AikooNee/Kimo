@@ -10,17 +10,8 @@ module.exports = {
   description: "show's what track is currently being played",
   category: "MUSIC",
   botPermissions: ["EmbedLinks"],
-  command: {
-    enabled: true,
-    aliases: ["nowplaying"],
-  },
   slashCommand: {
     enabled: true,
-  },
-
-  async messageRun(message, args) {
-    const response = await nowPlaying(message);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction) {

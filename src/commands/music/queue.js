@@ -9,11 +9,6 @@ module.exports = {
   description: "displays the current music queue",
   category: "MUSIC",
   botPermissions: ["EmbedLinks"],
-  command: {
-    enabled: true,
-    aliases: ["q"],
-    usage: "[page]",
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -25,13 +20,7 @@ module.exports = {
       },
     ],
   },
-
-  async messageRun(message, args) {
-    const page = args.length && Number(args[0]) ? Number(args[0]) : 1;
-    const response = await getQueue(message, page);
-    await message.safeReply(response);
-  },
-
+  
   async interactionRun(interaction) {
     const page = interaction.options.getInteger("page");
     const response = await getQueue(interaction, page);

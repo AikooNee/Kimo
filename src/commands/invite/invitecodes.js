@@ -9,10 +9,6 @@ module.exports = {
   description: "list all your invites codes in this guild",
   category: "INVITE",
   botPermissions: ["EmbedLinks", "ManageGuild"],
-  command: {
-    enabled: true,
-    usage: "[@member|id]",
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -23,12 +19,6 @@ module.exports = {
         required: false,
       },
     ],
-  },
-
-  async messageRun(message, args) {
-    const target = (await message.guild.resolveMember(args[0])) || message.member;
-    const response = await getInviteCodes(message, target.user);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction) {

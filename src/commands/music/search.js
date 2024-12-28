@@ -15,12 +15,6 @@ module.exports = {
   description: "search for matching songs on YouTube",
   category: "MUSIC",
   botPermissions: ["EmbedLinks"],
-  command: {
-    enabled: true,
-    aliases: ["sc"],
-    usage: "<song-name>",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -32,13 +26,7 @@ module.exports = {
       },
     ],
   },
-
-  async messageRun(message, args) {
-    const query = args.join(" ");
-    const response = await search(message, query);
-    if (response) await message.safeReply(response);
-  },
-
+  
   async interactionRun(interaction) {
     const query = interaction.options.getString("query");
     const response = await search(interaction, query);

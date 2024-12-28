@@ -1,6 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
 const { ApplicationCommandOptionType, ChannelType } = require("discord.js");
-const subs = ["channels", "roles", "bans", "messages", "voice", "members", "emojis", "invites", "status", "threads"];
 /**
  * @type {import("@structures/Command")}
  */
@@ -9,52 +8,6 @@ module.exports = {
   description: "enable or disable advanced logs",
   category: "ADMIN",
   userPermissions: ["ManageGuild"],
-  command: {
-    enabled: true,
-    subcommands: [
-      {
-        trigger: "channels <#channel|off>",
-        description: "enable logging for channel updates",
-      },
-      {
-        trigger: "roles <#channel|off>",
-        description: "enable logging for role updates",
-      },
-      {
-        trigger: "members <#channel|off>",
-        description: "enable logging for member updates",
-      },
-      {
-        trigger: "voice <#channel|off>",
-        description: "enable logging for voice channel updates",
-      },
-      {
-        trigger: "emojis <#channel|off>",
-        description: "enable logging for emojis creation/updates and deletion",
-      },
-      {
-        trigger: "invites <#channel|off>",
-        description: "enable logging for invite creation and deletion",
-      },
-      {
-        trigger: "messages <#channel|off>",
-        description: "enable logging for message updates",
-      },
-      {
-        trigger: "bans <#channel|off>",
-        description: "enable logging for bans updates",
-      },
-      {
-        trigger: "threads <#channel|off>",
-        description: "enable logging for thread updates",
-      },
-      {
-        trigger: "status",
-        description: "check logging setup status",
-      },
-    ],
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     ephemeral: true,
@@ -191,28 +144,6 @@ module.exports = {
         type: ApplicationCommandOptionType.Subcommand,
       },
     ],
-  },
-
-  async messageRun(message, args, data) {
-    const settings = data.settings;
-    const sub = args[0].toLowerCase();
-    const input = args[1]?.toLowerCase();
-    if (!subs.includes(sub))
-      return message.safeReply(`Invalid subcommands\nAvailable Subcommands: ${subs.map((s) => `\`${s}\``).join(", ")}`);
-    let targetChannel;
-
-    if (input === "none" || input === "off" || input === "disable" || !input) targetChannel = null;
-    else {
-      if (message.mentions.channels.size === 0) return message.safeReply("Incorrect command usage");
-      targetChannel = message.mentions.channels.first();
-    }
-    let response;
-    if (sub === "status") {
-      response = getLogStatus(settings, message.client);
-    } else {
-      response = await setChannel(targetChannel, settings, sub);
-    }
-    return message.safeReply(response);
   },
 
   async interactionRun(interaction, data) {

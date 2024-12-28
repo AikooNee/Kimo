@@ -9,12 +9,6 @@ module.exports = {
   category: "UTILITY",
   botPermissions: ["EmbedLinks"],
   userPermissions: [],
-  command: {
-    enabled: true,
-    aliases: [],
-    usage: "<server ip>",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -25,11 +19,6 @@ module.exports = {
         required: true,
       },
     ],
-  },
-
-  async messageRun(message, args, data) {
-    const response = await mcstatus(message, args[0]);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction, data) {

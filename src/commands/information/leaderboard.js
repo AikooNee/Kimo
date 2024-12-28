@@ -8,12 +8,6 @@ module.exports = {
   description: "Display the XP and invite leaderboard",
   category: "INFORMATION",
   botPermissions: ["EmbedLinks"],
-  command: {
-    enabled: true,
-    aliases: ["lb"],
-    minArgsCount: 1,
-    usage: "<xp|invite>",
-  },
   slashCommand: {
     enabled: true,
     options: [
@@ -28,11 +22,6 @@ module.exports = {
         ],
       },
     ],
-  },
-  async messageRun(message, args, data) {
-    const type = args[0].toLowerCase();
-    const response = await getLeaderboard(message, type, data.settings, message.author.displayName);
-    await message.safeReply(response);
   },
 
   async interactionRun(interaction, data) {

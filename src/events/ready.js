@@ -26,8 +26,8 @@ module.exports = async (client) => {
     status: "online",
     activities: [
       {
-        name: "Senpai | /help", // Activity name
-        type: ActivityType.Listening, // Activity type
+        name: "💞 k!help • aarubot.xyz",  // Activity name
+        type: ActivityType.Custom  // Activity type
       },
     ],
   });

@@ -50,7 +50,7 @@ module.exports = {
       return player.destroy();
     }
 
-    for (let songs = 0; songs < 3; ) {
+    for (let songs = 0; songs < 5; ) {
       const chosen = res.tracks[Math.floor(Math.random() * res.tracks.length)];
 
       if (
@@ -60,7 +60,7 @@ module.exports = {
         await player.queue.add(chosen);
         songs++;
 
-        if (songs >= 3) break;
+        if (songs >= 5) break;
       }
     }
 

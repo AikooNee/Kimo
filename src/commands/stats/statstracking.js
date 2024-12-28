@@ -8,12 +8,6 @@ module.exports = {
   description: "enable or disable tracking stats in the server",
   category: "STATS",
   userPermissions: ["ManageGuild"],
-  command: {
-    enabled: true,
-    aliases: ["statssystem", "statstracking"],
-    usage: "<on|off>",
-    minArgsCount: 1,
-  },
   slashCommand: {
     enabled: true,
     ephemeral: true,
@@ -35,13 +29,6 @@ module.exports = {
         ],
       },
     ],
-  },
-
-  async messageRun(message, args, data) {
-    const input = args[0].toLowerCase();
-    if (!["on", "off"].includes(input)) return message.safeReply("Invalid status. Value must be `on/off`");
-    const response = await setStatus(input, data.settings);
-    return message.safeReply(response);
   },
 
   async interactionRun(interaction, data) {

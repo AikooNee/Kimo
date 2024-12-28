@@ -7,20 +7,9 @@ module.exports = {
   cooldown: 3,
   category: "ADMIN",
   botPermissions: ["SendMessages", "EmbedLinks"],
-  userPermissions: [],
-  command: {
-    enabled: true,
-    aliases: [],
-    usage: "",
-    minArgsCount: 0,
-  },
   slashCommand: {
     enabled: true,
     options: [],
-  },
-
-  async messageRun(message, _args, data) {
-    await message.safeReply(await getSnipe(message, data));
   },
 
   async interactionRun(interaction, data) {
